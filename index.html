@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite + React</title>
+    <script>
+      // Force scroll to top immediately and prevent scroll restoration
+      window.scrollTo(0, 0);
+      if ('scrollRestoration' in history) {
+        history.scrollRestoration = 'manual';
+      }
+      document.addEventListener('DOMContentLoaded', () => {
+        window.scrollTo(0, 0);
+        setTimeout(() => window.scrollTo(0, 0), 0);
+        setTimeout(() => window.scrollTo(0, 0), 100);
+      });
+      window.addEventListener('load', () => window.scrollTo(0, 0));
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <div id="cursor-dot" class="cursor-dot"></div>
+    <script type="module" src="/src/main.jsx"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+  </body>
+</html>

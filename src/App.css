@@ -1,0 +1,800 @@
+body {
+  background: black;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+#root {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+ 
+
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+/* Full-bleed Spline page */
+.spline-fullbleed {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+}
+
+.card {
+  padding: 2em;
+}
+
+.read-the-docs {
+  color: #888;
+}
+
+/* (home page styles) */
+
+.navbar {
+  position: fixed;
+  top: 24px;
+  left: 0;
+  right: 0;
+  height: 120px;
+  display: flex;
+  align-items: center;
+  z-index: 10;
+  background: transparent; /* container is transparent; center pill has glass */
+}
+
+.nav-inner {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 48px;
+}
+
+.nav-right {
+  position: absolute;
+  right: 20px;
+  display: flex;
+  align-items: center;
+}
+
+.burger-btn {
+  width: 80px;
+  height: 80px;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border-radius: 999px;
+  border: none;
+  background: #111;
+  cursor: pointer;
+}
+
+.burger-btn span {
+  display: block;
+  width: 30px;
+  height: 2px;
+  background: white;
+  border-radius: 2px;
+}
+
+.burger-btn i {
+  color: #fff;
+  font-size: 34px;
+}
+
+/* Fullscreen menu overlay */
+.nav-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 0;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  background: rgba(0,0,0,0.96);
+  opacity: 0;
+  transition: height 520ms cubic-bezier(.22,.61,.36,1), opacity 520ms cubic-bezier(.22,.61,.36,1);
+  will-change: height, opacity;
+  z-index: 999;
+}
+
+.nav-overlay.open {
+  height: 100vh;
+  opacity: 1;
+  overflow-y: hidden; /* no scroll */
+}
+
+.nav-overlay-inner {
+  max-width: none;
+  width: 100%;
+  margin: 0;
+  padding: 40px 0 0; /* container padding; footer is absolutely positioned */
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  position: relative; /* allow absolutely positioned footer */
+}
+
+.overlay-logo {
+  position: fixed;
+  left: 20px;
+  top: 44px;
+}
+
+.overlay-logo img {
+  max-height: 68px;
+  height: auto;
+  width: auto;
+}
+
+.overlay-close {
+  position: fixed;
+  top: 44px; /* match .navbar top */
+  right: 20px; /* match .nav-right */
+  width: 80px; /* match .burger-btn size */
+  height: 80px;
+  border: none;
+  border-radius: 999px;
+  background: black;
+  color: #fff;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  z-index: 1000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 200ms ease;
+}
+
+.overlay-close i { font-size: 34px; }
+
+.nav-overlay.open .overlay-close {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.overlay-links {
+  display: none;
+}
+
+.overlay-menu {
+  margin-top: 80px; /* push links down */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.menu-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  padding: 15px 0px;
+  color: #fff;
+  text-decoration: none;
+  width: 100vw; /* ensure spans full viewport width */
+  margin-left: calc(50% - 50vw); /* negate any parent centering */
+  border-bottom: 1px solid rgba(255,255,255,0.12);
+}
+
+/* Ensure no UA purple/visited color shows */
+.overlay-menu .menu-row:link,
+.overlay-menu .menu-row:visited,
+.overlay-menu .menu-row:hover,
+.overlay-menu .menu-row:active {
+  color: #fff;
+}
+
+/* Per-row custom vertical paddings */
+.overlay-menu .menu-row:nth-child(1) { padding-left:10vw; }
+.overlay-menu .menu-row:nth-child(2) { padding-right: 10vw; }
+.overlay-menu .menu-row:nth-child(3) { padding-left:10vw; }
+.overlay-menu .menu-row:nth-child(4) { padding-right: 10vw; }
+
+
+.menu-thumb {
+  width: 7vw;
+  height: 7vw;
+  min-width: 72px;
+  min-height: 72px;
+  max-width: 160px;
+  max-height: 160px;
+  border-radius: 999px;
+  background-size: cover;
+  background-position: center;
+  flex: 0 0 auto;
+  transition: transform 240ms ease, filter 240ms ease, box-shadow 240ms ease;
+}
+
+.menu-text {
+  font-size: 7vw;
+  line-height: 1;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.70);
+  transition: color 160ms ease;
+}
+
+/* Hover effect: scale and lift the thumb when the row is hovered */
+.menu-row:hover .menu-thumb {
+  transform: scale(1.2) rotate(-10deg);
+  filter: saturate(1.1) contrast(1.05);
+  box-shadow: 0 10px 28px rgba(0,0,0,0.28);
+}
+
+.overlay-menu .menu-row:hover .menu-text { color: rgba(255, 255, 255, 0.95); }
+
+/* Place image after text on rows 2 and 4 */
+.overlay-menu .menu-row:nth-child(2) .menu-text,
+.overlay-menu .menu-row:nth-child(4) .menu-text { order: 1; }
+.overlay-menu .menu-row:nth-child(2) .menu-thumb,
+.overlay-menu .menu-row:nth-child(4) .menu-thumb { order: 2; }
+
+.overlay-footer {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 60px; /* raise footer slightly without affecting other layout */
+  padding: 0 24px;
+  display: grid;
+  grid-template-columns: 2fr 1.5fr 1fr;
+  gap: 24px;
+  color: white;
+  justify-items: start;
+  text-align: left;
+  font-size: 1.5vw;
+  line-height: 1.6;
+  font-weight: 600;
+  align-items: end; /* default: stick items to bottom */
+}
+
+/* Keep the first column behavior unchanged (top) */
+.overlay-footer .footer-col:first-child { align-self: start; }
+
+.overlay-footer a { color: inherit; text-decoration: none; font: inherit; }
+.overlay-footer a:link,
+.overlay-footer a:visited,
+.overlay-footer a:hover,
+.overlay-footer a:active { color: inherit; }
+
+/* Push content down when nav opens (layout-based, not transform) */
+#root {
+  transition: margin-top 520ms cubic-bezier(.22,.61,.36,1);
+}
+
+body.nav-open {
+  overflow: hidden;
+}
+
+body.nav-open #root {
+  margin-top: 100vh;
+}
+
+.nav-logo img {
+  max-height: 68px; /* keep within navbar */
+  height: auto;
+  width: auto;
+}
+
+.nav-logo {
+  position: absolute;
+  left: 20px;
+}
+
+.nav-center {
+  display: inline-flex;
+  align-items: center;
+  gap: 28px;
+  padding: 8px 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.405);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+
+.nav-links {
+  display: inline-flex;
+  gap: 28px;
+}
+
+.nav-links a {
+  color: #111;
+  text-decoration: none;
+  font-weight: 400;
+  font-size: 1.5rem;
+  padding: 8px 20px; /* more side padding inside the pill */
+  position: relative;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: background-color 160ms ease, color 160ms ease, padding-right 160ms ease, gap 160ms ease;
+  will-change: padding, background-color, gap;
+}
+
+.nav-links {
+  display: flex;
+  gap: 16px;
+}
+
+/* Middle nav link hover: dot that claims space (pushes text) */
+.nav-links a::before {
+  content: "";
+  width: 0px;
+  height: 16px;
+  border-radius: 999px;
+  background: #cbb8ff;
+  opacity: 0;
+  transition: width 160ms ease, opacity 160ms ease;
+  flex: 0 0 auto;
+}
+
+.nav-links a:hover {
+  background: rgba(173, 173, 173, 0.355);
+}
+
+.nav-links a:hover::before { width: 16px; opacity: 1; }
+
+.hero-section {
+  width: 100%;
+  min-height: 100vh;
+  position: relative; /* anchor parallax items */
+  background-color: white;
+  overflow: hidden; /* viewport for panning */
+}
+
+.hero-content {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 32vh;
+  color: black;
+  position: relative;
+  z-index: 1; /* text above background images */
+  pointer-events: none; /* let hover pass through to images */
+}
+
+.hero-content h1 {
+  margin: 0;
+  font-size: 16vw;
+  line-height: 1.12;
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  text-align: center;
+  pointer-events: none; /* pass hover to images behind */
+  cursor: default;
+}
+
+/* White zoom section with scroll-zoom box */
+.zoom-section {
+  position: relative;
+  background: #fff;
+  color: #111;
+  min-height: 220vh; /* extra space to drive the zoom */
+}
+
+.zoom-stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: grid;
+  place-items: center;
+}
+
+  .zoom-box {
+    --zoom: 1;
+    width: 100%;
+    max-width: 83vw;
+    height: 80vh;
+  border-radius: 24px;
+  background: #111;
+  box-shadow: 0 40px 100px rgba(0,0,0,0.35);
+  overflow: hidden; /* keep inner content clipped to rounded corners */
+  transform: scale(var(--zoom));
+  transform-origin: center center;
+  will-change: transform;
+  display: flex;
+  align-items: flex-start;
+  padding: 4rem;
+  padding-top: 6rem;
+}
+
+.zoom-content {
+  color: white;
+  max-width: 80%;
+  padding: 2rem;
+  margin: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.zoom-right-content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.5rem;
+  margin-left: auto;
+  max-width: 50%;
+}
+
+.zoom-content h2 {
+  font-size: 3rem;
+  font-weight: 700;
+  margin: 0 0 1.5rem 0;
+  line-height: 1.1;
+  padding-left: 2rem;
+  text-indent: 15rem;
+}
+
+.zoom-right-content p {
+  font-size: 1.2rem;
+  line-height: 1.6;
+  margin: 0;
+  opacity: 0.9;
+  text-align: left;
+  max-width: 100%;
+}
+
+/* (removed parallax-white section) */
+
+.cta-button {
+  background: transparent;
+  border: 2px solid white;
+  color: white;
+  padding: 1rem 2rem;
+  border-radius: 50px;
+  font-size: 1rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: 'Inter', sans-serif;
+}
+
+.cta-button:hover {
+  background: white;
+  color: black;
+  transform: translateY(-2px);
+}
+
+
+
+/* SplitText component handles per-letter animations; no additional CSS needed */
+
+/* Parallax background */
+.parallax-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 180vw; /* reduced from 300vw */
+  height: 200vh; /* slightly reduced */
+  pointer-events: auto; /* allow hover on images while mousemove still bubbles */
+  transform: translate(var(--px, 0px), var(--py, 0px));
+  will-change: transform;
+  transition: transform 0ms linear; /* JS-driven easing handles smoothness */
+  z-index: 0;
+}
+
+.parallax-item {
+  --intro: 1;
+  --hover: 1;
+  position: absolute;
+  width: var(--size, 200px);
+  height: var(--size, 200px); /* enforce square */
+  max-width: 60vw;
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28), 0 2px 8px rgba(0, 0, 0, 0.18);
+  filter: saturate(1.05) contrast(1.02);
+  transition: transform 140ms ease-out, box-shadow 140ms ease-out, opacity 140ms ease-out, filter 140ms ease-out;
+  /* no per-item transform; canvas pans as a whole */
+  cursor: pointer;
+  object-fit: cover; /* fill square while preserving subject */
+  opacity: 0; /* fade + pop in */
+  animation: parallaxPopIn 750ms cubic-bezier(.2, .8, .2, 1.2) both;
+  animation-delay: calc(var(--appear, 0ms) + var(--images-delay-base, 0ms));
+  will-change: transform, opacity;
+}
+
+
+/* Clean placement using CSS coordinates */
+.parallax-item.placed {
+  left: var(--x, 50%);
+  top: var(--y, 50%);
+  transform: translate(-50%, -50%) scale(calc(var(--intro) * var(--hover)));
+}
+
+.parallax-item.placed:hover {
+  --hover: 1.2;
+  opacity: 1;
+  filter: saturate(1.12) contrast(1.06) brightness(1.02);
+  z-index: 2;
+}
+
+@property --intro { syntax: '<number>'; inherits: false; initial-value: 1; }
+@property --hover { syntax: '<number>'; inherits: false; initial-value: 1; }
+
+@keyframes parallaxPopIn {
+  0% { opacity: 0; --intro: 0.6; filter: blur(2px); }
+  60% { opacity: 1; --intro: 1.12; filter: blur(0); }
+  100% { opacity: 1; --intro: 1; }
+}
+
+/* JS-driven hover fallback for overlays like navbar */
+.parallax-item.hovered {
+  transform: translate(-50%, -50%) scale(1.08);
+  opacity: 1;
+  filter: saturate(1.12) contrast(1.06) brightness(1.02);
+  z-index: 2;
+}
+
+.cursor-dot {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: #000;
+  pointer-events: none;
+  z-index: 2147483647; /* max practical z-index to be above anything */
+  transform: translate(-50%, -50%) scale(var(--dot-scale, 1));
+  opacity: 0;
+  transition: opacity 150ms ease, transform 150ms ease;
+}
+
+
+.black-section {
+  background: #111;
+  color: #fff;
+  min-height: 180vh; /* longer travel so movement is visible */
+  position: relative;
+  overflow: visible;
+}
+
+.black-inner {
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 16vh 24px;
+  position: sticky;
+  top: 0; /* stick to viewport while section scrolls */
+  z-index: 10;
+  will-change: transform;
+  background-color: #111;
+  transform: translateY(24vh);
+  min-height: 60vh;
+  border-radius: 24px;
+}
+
+/* When the full-screen nav (#111bg) is open, make the cursor dot light purple */
+body.nav-open .cursor-dot {
+  background: #cbb8ff;
+}
+
+/* Purple cursor dot in zoom section */
+.zoom-section .cursor-dot {
+  background: #cbb8ff;
+}
+
+/* Scroll hint */
+.scroll-hint {
+  position: absolute;
+  left: 50%;
+  bottom: 5%;
+  transform: translateX(-50%);
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: #111;
+  font-size: 18px;
+  letter-spacing: 0.08em;
+  opacity: 0.95;
+  z-index: 3;
+  padding: 10px 24px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.9);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(0,0,0,0.08);
+  box-shadow: 0 8px 22px rgba(0,0,0,0.10);
+  transition: opacity 220ms ease;
+}
+
+.scroll-hint::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -8px;
+  transform: translateX(-50%) rotate(45deg);
+  width: 14px;
+  height: 14px;
+  background: rgba(255, 255, 255, 0.9);
+  border-left: 1px solid rgba(0,0,0,0.08);
+  border-bottom: 1px solid rgba(0,0,0,0.08);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.08);
+  pointer-events: none;
+}
+
+.scroll-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #111;
+  animation: bounceY 1.4s ease-in-out infinite;
+}
+
+.scroll-text {
+  animation: fadePulse 1.6s ease-in-out infinite;
+  color: rgba(17, 17, 17, 0.6);
+}
+
+@keyframes bounceY {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+@keyframes fadePulse {
+  0%, 100% { opacity: 0.8; }
+  50% { opacity: 1; }
+}
+
+/* AOS override: make fade-up start further down */
+[data-aos='fade-up'] {
+  opacity: 0;
+  transform: translate3d(0, 100vh, 0);
+}
+
+[data-aos='fade-up'].aos-animate {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+/* About section */
+.about-section {
+  background: #fff;
+  color: #111;
+  width: 100vw;
+  height: 100vh;
+  padding: 0;
+}
+
+.about-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.about-inner h2 {
+  font-size: 72px;
+  line-height: 1.05;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  margin: 0 0 24px 0;
+}
+
+.about-inner p {
+  font-size: 20px;
+  line-height: 1.7;
+  max-width: 820px;
+  margin: 0;
+  opacity: 0.9;
+}
+
+/* White section */
+.white-section {
+  background: #fff;
+  color: #111;
+  min-height: 150vh;
+  /* Pull up over the #111zoom card */
+  margin: -10vh auto 6vh auto;
+  border-radius: 24px;
+  width: 100%;
+  position: relative;
+  z-index: 2;
+  box-shadow: 0 28px 80px rgba(0,0,0,0.16);
+  transform: translateY(0);
+  transition: transform 360ms cubic-bezier(.22,.61,.36,1);
+  will-change: transform;
+}
+
+.white-inner {
+  padding: 48px;
+  padding-top: 16vh; /* move tag and headline down a bit */
+}
+
+
+.section-tag {
+  display: inline-block;
+  padding: 10px 18px;
+  border: 2px solid #111;
+  border-radius: 999px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.white-headline {
+  font-size: 2.5vw;
+  line-height: 1.5;
+  font-weight: 600;
+  margin: 28px 0 0 0;
+  max-width: 50%; /* slightly narrower measure */
+}
+
+/* Stacked cards */
+.stack-section { margin-top: 20vh; }
+
+.stack-stage {
+  position: relative;
+  height: 340vh; /* longer runway: three transitions (1->2->3->4) */
+}
+
+.stack-viewport {
+  position: sticky;
+  top: 26vh; /* push cards a bit further down */
+  height: 86vh; /* slightly taller cards */
+  width: 95%;
+  margin: 0 auto;
+  overflow: hidden; /* do not show more than 80vh */
+  border-radius: 24px;
+}
+
+.stack-card {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  width: 100%;
+  height: 100%;
+  background: #f2f2f2;
+  border-radius: inherit;
+  box-shadow: 0 24px 70px rgba(0,0,0,0.10);
+  opacity: 1; /* ensure default is fully opaque */
+  will-change: transform, opacity;
+  transition: transform 260ms ease, opacity 260ms ease;
+}
+
+.top-card { z-index: 1; }
+.next-card { z-index: 2; transform: translate(-50%, 100%); }
+.third-card { z-index: 3; transform: translate(-50%, 200%); }
+.fourth-card { z-index: 4; transform: translate(-50%, 300%); }
+
+/* Colors and on-top state */
+.top-card { background: #0a0a0a; color: #fff; }
+.next-card { background: blue ; color: #111; }
+.third-card { background: green; color: #111; }
+.fourth-card { background: orange; color: #111; }
+.stack-card.on-top { z-index: 3; }

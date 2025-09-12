@@ -773,6 +773,10 @@ body.nav-open .cursor-dot {
   margin: 0 auto;
   overflow: hidden; /* do not show more than 80vh */
   border-radius: 24px;
+  /* Improve rendering performance */
+  contain: layout style paint;
+  will-change: transform;
+  transform: translateZ(0); /* Force hardware acceleration */
 }
 
 /* Mobile optimizations for stack cards */
@@ -843,12 +847,16 @@ body.nav-open .cursor-dot {
   opacity: 1; /* ensure default is fully opaque */
   will-change: transform, opacity;
   transition: transform 260ms ease, opacity 260ms ease;
+  /* Performance optimizations */
+  contain: layout style paint;
+  backface-visibility: hidden;
+  transform: translateX(-50%) translateZ(0); /* Force hardware acceleration */
 }
 
 .top-card { z-index: 1; }
-.next-card { z-index: 2; transform: translate(-50%, 100%); }
-.third-card { z-index: 3; transform: translate(-50%, 200%); }
-.fourth-card { z-index: 4; transform: translate(-50%, 300%); }
+.next-card { z-index: 2; transform: translate(-50%, 100%) translateZ(0); }
+.third-card { z-index: 3; transform: translate(-50%, 200%) translateZ(0); }
+.fourth-card { z-index: 4; transform: translate(-50%, 300%) translateZ(0); }
 
 /* Colors and on-top state */
 .top-card { background: #0a0a0a; color: #fff; }

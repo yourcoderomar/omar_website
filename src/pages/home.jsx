@@ -47,10 +47,21 @@ function Home() {
     const onViewportChange = () => {
       if (window.visualViewport) {
         centerCanvas()
+        // Clear cached elements on viewport change
+        cachedElements = {}
       }
     }
     if (window.visualViewport) {
       window.visualViewport.addEventListener('resize', onViewportChange)
+    }
+    
+    // Cache DOM elements to avoid repeated queries
+    let cachedElements = {}
+    const getCachedElement = (selector) => {
+      if (!cachedElements[selector]) {
+        cachedElements[selector] = document.querySelector(selector)
+      }
+      return cachedElements[selector]
     }
     
     // Use RAF for smoother animations
@@ -127,45 +138,45 @@ function Home() {
         const fourth = viewport.querySelector('.fourth-card')
 
         if (topCard && nextCard && third && fourth) {
-          // Improved transform handling to prevent conflicts
+          // Optimized transform handling with hardware acceleration
           const scale1 = 1 - 0.12 * p1
           const fade1 = Math.max(0, 1 - 0.85 * p1)
           
-          topCard.style.transform = `translate(-50%, 0) scale(${scale1})`
+          topCard.style.transform = `translate(-50%, 0) scale(${scale1}) translateZ(0)`
           topCard.style.opacity = String(fade1)
           topCard.style.visibility = p1 >= 0.999 ? 'hidden' : 'visible'
 
-          // Cleaner transform logic for nextCard
+          // Optimized nextCard logic
           const rise1 = (1 - p1) * 100
           if (p2 <= 0) {
-            nextCard.style.transform = `translate(-50%, ${rise1}%)`
+            nextCard.style.transform = `translate(-50%, ${rise1}%) translateZ(0)`
             nextCard.style.opacity = '1'
           } else {
             const scale2 = 1 - 0.12 * p2
             const fade2 = Math.max(0, 1 - 0.85 * p2)
-            nextCard.style.transform = `translate(-50%, 0) scale(${scale2})`
+            nextCard.style.transform = `translate(-50%, 0) scale(${scale2}) translateZ(0)`
             nextCard.style.opacity = String(fade2)
           }
           nextCard.style.visibility = p2 >= 0.999 ? 'hidden' : 'visible'
           nextCard.classList.toggle('on-top', p1 > 0.85 && p2 <= 0)
 
-          // Third card - simplified logic
+          // Optimized third card
           const rise2 = (1 - p2) * 100
           if (p3 <= 0) {
-            third.style.transform = `translate(-50%, ${rise2}%)`
+            third.style.transform = `translate(-50%, ${rise2}%) translateZ(0)`
             third.style.opacity = '1'
           } else {
             const scale3 = 1 - 0.12 * p3
             const fade3 = Math.max(0, 1 - 0.85 * p3)
-            third.style.transform = `translate(-50%, 0) scale(${scale3})`
+            third.style.transform = `translate(-50%, 0) scale(${scale3}) translateZ(0)`
             third.style.opacity = String(fade3)
           }
           third.style.visibility = p3 >= 0.999 ? 'hidden' : 'visible'
           third.classList.toggle('on-top', p2 > 0.85 && p3 <= 0)
 
-          // Fourth card
+          // Optimized fourth card
           const rise3 = (1 - p3) * 100
-          fourth.style.transform = `translate(-50%, ${rise3}%)`
+          fourth.style.transform = `translate(-50%, ${rise3}%) translateZ(0)`
           fourth.style.opacity = '1'
           fourth.classList.toggle('on-top', p3 > 0.85)
         }
@@ -174,35 +185,43 @@ function Home() {
       rafId = null
     }
     
-    // Lightweight scroll handler that just captures data
+    // Improved scroll handler with caching and throttling
+    let scrollTimer = null
+    const isMobile = window.innerWidth <= 768
+    const throttleDelay = isMobile ? 8 : 16 // More aggressive throttling on mobile
+    
     const onScroll = () => {
-      const hint = document.querySelector('.scroll-hint')
-      const y = window.scrollY || window.pageYOffset || 0
-      const fadeDistance = 220
-      const zoomSection = document.querySelector('.zoom-section')
-      const zoomBox = document.querySelector('.zoom-box')
-      const white = document.querySelector('.white-section')
-      const black = document.querySelector('.black-section')
-      const viewport = document.querySelector('.stack-viewport')
-      const stage = document.querySelector('.stack-stage')
-      
-      // Store scroll data
-      latestScrollData = {
-        hint,
-        y,
-        fadeDistance,
-        zoomSection,
-        zoomBox,
-        white,
-        black,
-        viewport,
-        stage
+      // Clear existing timer
+      if (scrollTimer) {
+        clearTimeout(scrollTimer)
       }
       
-      // Schedule animation update
+      const y = window.scrollY || window.pageYOffset || 0
+      
+      // Store minimal scroll data immediately
+      latestScrollData = {
+        hint: getCachedElement('.scroll-hint'),
+        y,
+        fadeDistance: 220,
+        zoomSection: getCachedElement('.zoom-section'),
+        zoomBox: getCachedElement('.zoom-box'),
+        white: getCachedElement('.white-section'),
+        black: getCachedElement('.black-section'),
+        viewport: getCachedElement('.stack-viewport'),
+        stage: getCachedElement('.stack-stage')
+      }
+      
+      // Schedule animation update with throttling
       if (!rafId) {
         rafId = requestAnimationFrame(updateAnimations)
       }
+      
+      // Add a small delay to prevent excessive updates
+      scrollTimer = setTimeout(() => {
+        if (latestScrollData && !rafId) {
+          rafId = requestAnimationFrame(updateAnimations)
+        }
+      }, throttleDelay)
     }
     window.addEventListener('scroll', onScroll, { passive: true })
     // initialize once on mount
@@ -213,6 +232,13 @@ function Home() {
       window.removeEventListener('scroll', onScroll)
       if (window.visualViewport) {
         window.visualViewport.removeEventListener('resize', onViewportChange)
+      }
+      // Clean up timers and animation frames
+      if (scrollTimer) {
+        clearTimeout(scrollTimer)
+      }
+      if (rafId) {
+        cancelAnimationFrame(rafId)
       }
     }
   }, [])

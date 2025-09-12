@@ -64,18 +64,31 @@ function Home() {
       return cachedElements[selector]
     }
     
-    // Use RAF for smoother animations
+    // Use RAF for smoother animations with interpolation
     let rafId = null
     let latestScrollData = null
+    let previousScrollData = null
+    let animationProgress = 0
     
     const updateAnimations = () => {
       if (!latestScrollData) return
       
       const { hint, y, fadeDistance, zoomSection, zoomBox, white, black, viewport, stage } = latestScrollData
       
-      // Scroll hint fade
+      // For slow scrolling, add subtle interpolation
+      const useInterpolation = scrollVelocity < 0.3 && previousScrollData
+      let interpolatedY = y
+      
+      if (useInterpolation && previousScrollData) {
+        // Smooth interpolation for micro-movements
+        const yDiff = y - previousScrollData.y
+        const smoothingFactor = 0.15
+        interpolatedY = previousScrollData.y + (yDiff * smoothingFactor)
+      }
+      
+      // Scroll hint fade (using interpolated position for smooth slow scrolling)
       if (hint) {
-        const opacity = Math.max(0, 1 - y / fadeDistance)
+        const opacity = Math.max(0, 1 - interpolatedY / fadeDistance)
         hint.style.opacity = String(opacity)
       }
       
@@ -138,6 +151,14 @@ function Home() {
         const fourth = viewport.querySelector('.fourth-card')
 
         if (topCard && nextCard && third && fourth) {
+          // Disable CSS transitions during slow scrolling for immediate response
+          const isSlowScrolling = scrollVelocity < 0.3
+          const transitionValue = isSlowScrolling ? 'none' : ''
+          
+          [topCard, nextCard, third, fourth].forEach(card => {
+            if (card) card.style.transition = transitionValue
+          })
+          
           // Optimized transform handling with hardware acceleration
           const scale1 = 1 - 0.12 * p1
           const fade1 = Math.max(0, 1 - 0.85 * p1)
@@ -182,23 +203,34 @@ function Home() {
         }
       }
       
+      // Store current data as previous for next frame
+      previousScrollData = { ...latestScrollData }
+      
       rafId = null
     }
     
-    // Improved scroll handler with caching and throttling
+    // Advanced scroll handler with velocity-based throttling
     let scrollTimer = null
+    let lastScrollY = 0
+    let lastScrollTime = Date.now()
+    let scrollVelocity = 0
     const isMobile = window.innerWidth <= 768
-    const throttleDelay = isMobile ? 8 : 16 // More aggressive throttling on mobile
     
     const onScroll = () => {
-      // Clear existing timer
-      if (scrollTimer) {
-        clearTimeout(scrollTimer)
-      }
-      
+      const now = Date.now()
       const y = window.scrollY || window.pageYOffset || 0
       
-      // Store minimal scroll data immediately
+      // Calculate scroll velocity
+      const deltaY = Math.abs(y - lastScrollY)
+      const deltaTime = now - lastScrollTime
+      scrollVelocity = deltaTime > 0 ? deltaY / deltaTime : 0
+      
+      // Adaptive throttling based on scroll velocity
+      // Slow scrolling = immediate updates, fast scrolling = throttled
+      const isSlowScroll = scrollVelocity < 0.5 // pixels per ms
+      const shouldUpdateImmediately = isSlowScroll || !rafId
+      
+      // Store scroll data
       latestScrollData = {
         hint: getCachedElement('.scroll-hint'),
         y,
@@ -211,17 +243,30 @@ function Home() {
         stage: getCachedElement('.stack-stage')
       }
       
-      // Schedule animation update with throttling
-      if (!rafId) {
-        rafId = requestAnimationFrame(updateAnimations)
+      // Clear any existing timer
+      if (scrollTimer) {
+        clearTimeout(scrollTimer)
+        scrollTimer = null
       }
       
-      // Add a small delay to prevent excessive updates
-      scrollTimer = setTimeout(() => {
-        if (latestScrollData && !rafId) {
+      if (shouldUpdateImmediately) {
+        // Immediate update for slow scrolling
+        if (!rafId) {
           rafId = requestAnimationFrame(updateAnimations)
         }
-      }, throttleDelay)
+      } else {
+        // Throttled update for fast scrolling
+        const throttleDelay = isMobile ? 8 : 16
+        scrollTimer = setTimeout(() => {
+          if (latestScrollData && !rafId) {
+            rafId = requestAnimationFrame(updateAnimations)
+          }
+        }, throttleDelay)
+      }
+      
+      // Update tracking variables
+      lastScrollY = y
+      lastScrollTime = now
     }
     window.addEventListener('scroll', onScroll, { passive: true })
     // initialize once on mount

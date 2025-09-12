@@ -53,83 +53,69 @@ function Home() {
       window.visualViewport.addEventListener('resize', onViewportChange)
     }
     
-    // Throttle scroll events for mobile performance
-    let scrollTimeout = null
-    const throttleScroll = (callback, delay = 16) => { // ~60fps
-      return () => {
-        if (scrollTimeout) return
-        scrollTimeout = setTimeout(() => {
-          callback()
-          scrollTimeout = null
-        }, delay)
-      }
-    }
+    // Use RAF for smoother animations
+    let rafId = null
+    let latestScrollData = null
     
-    // Fade out the scroll hint as user scrolls
-    const onScroll = throttleScroll(() => {
-      const hint = document.querySelector('.scroll-hint')
-      if (!hint) return
-      const y = window.scrollY || window.pageYOffset || 0
-      const fadeDistance = 220 // px over which it fades out
-      const opacity = Math.max(0, 1 - y / fadeDistance)
-      hint.style.opacity = String(opacity)
+    const updateAnimations = () => {
+      if (!latestScrollData) return
+      
+      const { hint, y, fadeDistance, zoomSection, zoomBox, white, black, viewport, stage } = latestScrollData
+      
+      // Scroll hint fade
+      if (hint) {
+        const opacity = Math.max(0, 1 - y / fadeDistance)
+        hint.style.opacity = String(opacity)
+      }
+      
       // Zoom section scaling
-      const zoomSection = document.querySelector('.zoom-section')
-      const zoomBox = document.querySelector('.zoom-box')
       if (zoomSection && zoomBox) {
         const rect = zoomSection.getBoundingClientRect()
-        const vh = window.innerHeight || document.documentElement.clientHeight
+        const vh = getViewportHeight()
         const progress = Math.min(1, Math.max(0, 1 - rect.top / vh))
-        // Scale from 0.92 -> 1.1 over the scroll-in
         const scale = 0.92 + progress * (1.1 - 0.92)
         zoomBox.style.setProperty('--zoom', String(scale))
       }
-      // Smooth lift-in for white section as it overlaps the black card
-      const white = document.querySelector('.white-section')
+      
+      // White section smooth lift
       if (white) {
         const wr = white.getBoundingClientRect()
-        const vh2 = window.innerHeight || document.documentElement.clientHeight
-        // When the white section's top is within 40vh of the viewport, start easing in
+        const vh2 = getViewportHeight()
         const start = vh2 * 0.9
         const end = vh2 * 0.4
         const t = Math.min(1, Math.max(0, (start - wr.top) / (start - end)))
-        const eased = t * t * (3 - 2 * t) // smoothstep easing
-        const translate = (1 - eased) * 40 // px upward shift reducing to 0
+        const eased = t * t * (3 - 2 * t)
+        const translate = (1 - eased) * 40
         white.style.transform = `translateY(-${translate}px)`
       }
-      // Move the black-section inner upward while scrolling (content lifts instead of screen)
-      const black = document.querySelector('.black-section')
+      
+      // Black section movement
       if (black) {
         const inner = black.querySelector('.black-inner')
         if (inner) {
           const br = black.getBoundingClientRect()
-          const vhb = window.innerHeight || document.documentElement.clientHeight
-          // Start earlier and travel further so it overlaps the previous section
+          const vhb = getViewportHeight()
           const start = vhb * 1.1
           const end = vhb * 0.2
           const t = Math.min(1, Math.max(0, (start - br.top) / (start - end)))
           const eased = t * t * (3 - 2 * t)
-          // Translate from 24vh below to -40vh above baseline (into previous section)
-          const startOffset = 24 // vh
-          const endOffset = -40 // vh
+          const startOffset = 24
+          const endOffset = -40
           const offset = startOffset + (endOffset - startOffset) * eased
           inner.style.transform = `translateY(${offset}vh)`
         }
       }
-      // (removed overlay fade logic)
-      // Stacked card transition with mobile-safe viewport calculation
-      const viewport = document.querySelector('.stack-viewport')
-      const stage = document.querySelector('.stack-stage')
+      
+      // Stack cards with improved performance
       if (viewport && stage) {
         const sr = stage.getBoundingClientRect()
-        const vh3 = getViewportHeight() || document.documentElement.clientHeight
+        const vh3 = getViewportHeight()
         const viewportHeight = viewport.getBoundingClientRect().height || vh3 * 0.8
         const startY = vh3 * 0.1
         const scrolled = Math.max(0, startY - sr.top)
         
-        // Use RAF throttling for mobile performance
         const isMobile = window.innerWidth <= 768
-        const smoothingFactor = isMobile ? 0.8 : 1 // Smoother transitions on mobile
+        const smoothingFactor = isMobile ? 0.85 : 1
         
         const p1 = Math.min(1, Math.max(0, (scrolled / viewportHeight) * smoothingFactor))
         const p2 = Math.min(1, Math.max(0, ((scrolled - viewportHeight) / viewportHeight) * smoothingFactor))
@@ -141,41 +127,83 @@ function Home() {
         const fourth = viewport.querySelector('.fourth-card')
 
         if (topCard && nextCard && third && fourth) {
-          // Phase 1 (0..1): first -> second
+          // Improved transform handling to prevent conflicts
           const scale1 = 1 - 0.12 * p1
-          const fade1 = 1 - 0.85 * p1
+          const fade1 = Math.max(0, 1 - 0.85 * p1)
+          
           topCard.style.transform = `translate(-50%, 0) scale(${scale1})`
-          topCard.style.opacity = String(Math.max(0, fade1))
-          // Hide first only when the second has fully arrived (end of p1)
+          topCard.style.opacity = String(fade1)
           topCard.style.visibility = p1 >= 0.999 ? 'hidden' : 'visible'
 
+          // Cleaner transform logic for nextCard
           const rise1 = (1 - p1) * 100
-          nextCard.style.transform = p2 <= 0 ? `translate(-50%, ${rise1}%)` : `translate(-50%, 0) scale(${1 - 0.12 * p2})`
-          nextCard.style.opacity = p2 <= 0 ? '1' : String(Math.max(0, 1 - 0.85 * p2))
-          // Hide second only when the third has fully arrived (end of p2)
+          if (p2 <= 0) {
+            nextCard.style.transform = `translate(-50%, ${rise1}%)`
+            nextCard.style.opacity = '1'
+          } else {
+            const scale2 = 1 - 0.12 * p2
+            const fade2 = Math.max(0, 1 - 0.85 * p2)
+            nextCard.style.transform = `translate(-50%, 0) scale(${scale2})`
+            nextCard.style.opacity = String(fade2)
+          }
           nextCard.style.visibility = p2 >= 0.999 ? 'hidden' : 'visible'
           nextCard.classList.toggle('on-top', p1 > 0.85 && p2 <= 0)
 
-          // Phase 2 (0..1): second -> third
+          // Third card - simplified logic
           const rise2 = (1 - p2) * 100
-          third.style.transform = `translate(-50%, ${rise2}%)`
-          third.style.opacity = '1' // no fade on enter
-          third.classList.toggle('on-top', p2 > 0.85)
+          if (p3 <= 0) {
+            third.style.transform = `translate(-50%, ${rise2}%)`
+            third.style.opacity = '1'
+          } else {
+            const scale3 = 1 - 0.12 * p3
+            const fade3 = Math.max(0, 1 - 0.85 * p3)
+            third.style.transform = `translate(-50%, 0) scale(${scale3})`
+            third.style.opacity = String(fade3)
+          }
+          third.style.visibility = p3 >= 0.999 ? 'hidden' : 'visible'
+          third.classList.toggle('on-top', p2 > 0.85 && p3 <= 0)
 
-          // Phase 3 (0..1): third -> fourth
-          // Ensure fourth is in view: start at 100% and move to 0%
+          // Fourth card
           const rise3 = (1 - p3) * 100
           fourth.style.transform = `translate(-50%, ${rise3}%)`
           fourth.style.opacity = '1'
-          // third shrinks/fades only when leaving
-          const scale3 = 1 - 0.12 * p3
-          third.style.transform = p3 <= 0 ? third.style.transform : `translate(-50%, 0) scale(${scale3})`
-          third.style.opacity = p3 <= 0 ? '1' : String(Math.max(0, 1 - 0.85 * p3))
-          third.style.visibility = p3 >= 0.999 ? 'hidden' : 'visible'
           fourth.classList.toggle('on-top', p3 > 0.85)
         }
       }
-    })
+      
+      rafId = null
+    }
+    
+    // Lightweight scroll handler that just captures data
+    const onScroll = () => {
+      const hint = document.querySelector('.scroll-hint')
+      const y = window.scrollY || window.pageYOffset || 0
+      const fadeDistance = 220
+      const zoomSection = document.querySelector('.zoom-section')
+      const zoomBox = document.querySelector('.zoom-box')
+      const white = document.querySelector('.white-section')
+      const black = document.querySelector('.black-section')
+      const viewport = document.querySelector('.stack-viewport')
+      const stage = document.querySelector('.stack-stage')
+      
+      // Store scroll data
+      latestScrollData = {
+        hint,
+        y,
+        fadeDistance,
+        zoomSection,
+        zoomBox,
+        white,
+        black,
+        viewport,
+        stage
+      }
+      
+      // Schedule animation update
+      if (!rafId) {
+        rafId = requestAnimationFrame(updateAnimations)
+      }
+    }
     window.addEventListener('scroll', onScroll, { passive: true })
     // initialize once on mount
     onScroll()

@@ -1,10 +1,25 @@
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 0px;
+}
+
+* {
+  scroll-behavior: smooth;
+}
+
 body {
   background: black;
   min-height: 100vh;
   overflow-x: hidden;
-  /* Improve touch scrolling on mobile */
+  /* Ultra-smooth scrolling optimizations */
   -webkit-overflow-scrolling: touch;
-  overscroll-behavior-y: none; /* Prevent pull-to-refresh and rubber banding */
+  overscroll-behavior-y: none;
+  scroll-behavior: smooth;
+  /* Hardware acceleration for smoother scrolling */
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  /* Better scroll performance */
+  will-change: scroll-position;
 }
 
 #root {
@@ -476,24 +491,43 @@ body.nav-open #root {
 /* (removed parallax-white section) */
 
 .cta-button {
-  background: transparent;
-  border: 2px solid white;
-  color: white;
-  padding: 1rem 2rem;
+  background: white;
+  color: #111;
+  padding: 1.5vw 1.5vw;
   border-radius: 50px;
-  font-size: 1rem;
-  font-weight: 700;
-  text-transform: uppercase;
+  font-size: 1.2vw;
+  font-weight: 500;
   letter-spacing: 0.5px;
   cursor: pointer;
   transition: all 0.3s ease;
-  font-family: 'Inter', sans-serif;
+  font-family: inherit;
+  position: relative;
+  overflow: hidden;
+}
+
+.cta-button::before {
+  content: "";
+  position: absolute;
+  left: 1vw;
+  top: calc(50% + 1px);
+  transform: translateY(-50%);
+  width: 0;
+  height: 20px;
+  border-radius: 999px;
+  background: #cbb8ff;
+  opacity: 0;
+  transition: width 200ms ease, opacity 200ms ease;
+}
+
+.cta-button:hover::before {
+  width: 20px;
+  opacity: 1;
 }
 
 .cta-button:hover {
-  background: white;
-  color: black;
-  transform: translateY(-2px);
+  padding-left: 3vw;
+  gap: 0.5rem;
+  border: none;
 }
 
 
@@ -579,6 +613,26 @@ body.nav-open #root {
   transform: translate(-50%, -50%) scale(var(--dot-scale, 1));
   opacity: 0;
   transition: opacity 150ms ease, transform 150ms ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 4px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+/* Larger cursor dot when hovering over cards */
+.cursor-dot.large {
+  --dot-scale: 3.5;
+}
+
+.stack-card {
+  cursor: pointer; /* Show pointer cursor over cards */
+}
+
+.card-content {
+  cursor: pointer; /* Show pointer cursor over card content */
 }
 
 
@@ -742,7 +796,7 @@ body.nav-open .cursor-dot {
 
 .section-tag {
   display: inline-block;
-  padding: 10px 18px;
+  padding: 4px 12px;
   border: 2px solid #111;
   border-radius: 999px;
   font-weight: 600;
@@ -832,6 +886,70 @@ body.nav-open .cursor-dot {
   .white-section {
     -webkit-overflow-scrolling: touch;
   }
+  
+  /* Mobile card styling */
+  .card-content {
+    padding: 2rem;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 2rem;
+  }
+  
+  .card-left {
+    flex: none;
+    width: 100%;
+    align-items: center;
+  }
+  
+  .card-center {
+    position: static;
+    transform: none;
+  }
+  
+  .card-title {
+    font-size: 2rem;
+  }
+  
+  .card-image-wrapper {
+    width: 100%;
+    height: 100%;
+  }
+  
+  /* Fourth card mobile adjustments */
+  .projects-title {
+    font-size: 2.2rem;
+  }
+  
+  .projects-btn {
+    padding: 0.8rem 2rem;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Small mobile card adjustments */
+  .card-content {
+    padding: 1.5rem;
+  }
+  
+  .card-title {
+    font-size: 1.75rem;
+  }
+  
+  .card-tags {
+    justify-content: center;
+  }
+  
+  .card-tag {
+    font-size: 0.8rem;
+    padding: 0.4rem 0.8rem;
+  }
+  
+  .card-image-wrapper {
+    width: 90%;
+    height: 90%;
+  }
 }
 
 .stack-card {
@@ -859,8 +977,230 @@ body.nav-open .cursor-dot {
 .fourth-card { z-index: 4; transform: translate(-50%, 300%) translateZ(0); }
 
 /* Colors and on-top state */
-.top-card { background: #0a0a0a; color: #fff; }
-.next-card { background: blue ; color: #111; }
-.third-card { background: green; color: #111; }
-.fourth-card { background: orange; color: #111; }
+.top-card { background: #2C3E50; color: #fff; } /* Dark blue-gray - works well with web dev screenshots */
+.next-card { background: #8E44AD; color: #fff; } /* Deep purple - great for data/analytics visuals */
+.third-card { background: #E67E22; color: #fff; } /* Warm orange - complements design/UI images */
+.fourth-card { background: #1a1a1a; color: #fff; }
 .stack-card.on-top { z-index: 3; }
+
+/* Card-specific title colors */
+.top-card .card-title {
+  color: #F5F5DC; /* Beige/off-white for web development */
+}
+
+.next-card .card-title {
+  color: #F39C12; /* Golden yellow for data analytics */
+}
+
+.third-card .card-title {
+  color: #E74C3C; /* Vibrant red for UI/UX design */
+}
+
+/* Card-specific tag colors */
+.top-card .card-tag {
+  background: transparent;
+  border: 2px solid #F5F5DC;
+  color: #F5F5DC;
+}
+
+.next-card .card-tag {
+  background: transparent;
+  border: 2px solid #F39C12;
+  color: #F39C12;
+}
+
+.third-card .card-tag {
+  background: transparent;
+  border: 2px solid #E74C3C;
+  color: #E74C3C;
+}
+
+/* Card content layout */
+.card-content {
+  display: flex;
+  height: 100%;
+  padding: 2rem 3rem 3rem 2rem;
+  position: relative;
+  align-items: flex-start;
+}
+
+.card-left {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  z-index: 2;
+  position: relative;
+  margin-top: -0.5rem;
+  margin-left: -0.5rem;
+}
+
+.card-center {
+  position: absolute;
+  left: 50%;
+  top: 48%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Typography */
+.card-title {
+  margin: 0;
+  font-size: 2.5rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.card-tag {
+  display: inline-block;
+  padding: 4px 12px;
+  border: 2px solid #111;
+  border-radius: 999px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  background: transparent;
+}
+
+/* Image styling */
+.card-image-wrapper {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  transition: transform 300ms ease;
+}
+
+.card-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 300ms ease;
+}
+
+/* Card hover effects */
+.card-content:hover .card-image-wrapper {
+  transform: scale(1.1);
+}
+
+.card-content:hover .card-image {
+  transform: scale(1.05);
+}
+
+/* Background overlay for darkening effect */
+.card-content::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0);
+  transition: background 300ms ease;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.card-content:hover::before {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+/* Fourth card specific styling */
+.fourth-content {
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  text-align: center;
+  gap: 2rem;
+  padding-top: 4rem;
+}
+
+.projects-tag {
+  display: inline-block;
+  padding: 4px 12px;
+  background: transparent;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 999px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #fff;
+  backdrop-filter: blur(10px);
+}
+
+.projects-title {
+  margin: 0;
+  font-size: 4vw;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  color: #fff;
+  max-width: 80%;
+}
+
+.projects-btn {
+  background: white;
+  color: #111;
+  padding: 1.5vw 1.5vw;
+  border-radius: 50px;
+  font-size: 1.2vw;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: inherit;
+  position: relative;
+  overflow: hidden;
+}
+
+.projects-btn::before {
+  content: "";
+  position: absolute;
+  left: 1vw;
+  top: calc(50% + 1px);
+  transform: translateY(-50%);
+  width: 0;
+  height: 20px;
+  border-radius: 999px;
+  background: #cbb8ff;
+  opacity: 0;
+  transition: width 200ms ease, opacity 200ms ease;
+}
+
+.projects-btn:hover::before {
+  width: 20px;
+  opacity: 1;
+}
+
+.projects-btn:hover {
+  padding-left: 3vw;
+  gap: 0.5rem;
+  border: none;
+}
+
+/* Remove hover effects for fourth card */
+.fourth-card .card-content:hover .card-image-wrapper {
+  transform: none;
+}
+
+.fourth-card .card-content:hover .card-image {
+  transform: none;
+}
+
+.fourth-card .card-content::before {
+  display: none;
+}
+
+.fourth-card .card-content:hover::before {
+  display: none;
+}

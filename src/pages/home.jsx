@@ -39,57 +39,9 @@ function Home() {
     centerCanvas()
     const onResize = () => centerCanvas()
     window.addEventListener('resize', onResize)
-    // Global cursor dot handler
-    const globalMouseMove = (e) => {
-      const dot = document.getElementById('cursor-dot')
-      if (dot) {
-        dot.style.left = `${e.clientX}px`
-        dot.style.top = `${e.clientY}px`
-        dot.style.opacity = '1'
-        
-        // Adjust dot size based on hover target
-        const target = document.elementFromPoint(e.clientX, e.clientY)
-        const interactive = target && target.closest && target.closest('a, button, [role="button"], .burger-btn, .menu-row, .overlay-close, .nav-links a')
-        const onFirstThreeCards = target && target.closest && target.closest('.top-card, .next-card, .third-card')
-        
-        let scale = 1
-        if (interactive) {
-          scale = 0.6 // Shrink for interactive elements
-          dot.textContent = ''
-        } else if (onFirstThreeCards) {
-          scale = 3.5 // Enlarge for first 3 cards only
-          dot.textContent = 'VIEW PROJECT'
-        } else {
-          dot.textContent = '' // Normal cursor for fourth card and everything else
-        }
-        
-        dot.style.setProperty('--dot-scale', String(scale))
-        
-        // Set cursor color based on state and underlying section
-        const navOpen = document.body && document.body.classList.contains('nav-open')
-        const inZoom = target && target.closest && target.closest('.zoom-section')
-        const inWhite = target && target.closest && target.closest('.white-section, .about-section')
-        if (navOpen) {
-          dot.style.background = '#cbb8ff'
-        } else if (inZoom) {
-          dot.style.background = '#cbb8ff' // light purple over black div
-        } else if (inWhite) {
-          dot.style.background = '#000' // black over white sections
-        } else {
-          dot.style.background = '#000'
-        }
-      }
-    }
-    
-    // Hero section specific mouse handler
-    const heroSection = document.querySelector('.hero-section')
-    if (heroSection) {
-      heroSection.addEventListener('mousemove', handleMouseMove)
-      heroSection.addEventListener('mouseleave', handleMouseLeave)
-    }
-    
-    // Global mouse listener for cursor dot only
-    window.addEventListener('mousemove', globalMouseMove)
+    // Also listen globally so movement continues over the navbar
+    const onMove = (e) => handleMouseMove(e)
+    window.addEventListener('mousemove', onMove)
     
     // Mobile viewport resize handling
     const onViewportChange = () => {
@@ -276,16 +228,8 @@ function Home() {
     onScroll()
     return () => {
       window.removeEventListener('resize', onResize)
-      window.removeEventListener('mousemove', globalMouseMove)
+      window.removeEventListener('mousemove', onMove)
       window.removeEventListener('scroll', onScroll)
-      
-      // Clean up hero-specific listeners
-      const heroSection = document.querySelector('.hero-section')
-      if (heroSection) {
-        heroSection.removeEventListener('mousemove', handleMouseMove)
-        heroSection.removeEventListener('mouseleave', handleMouseLeave)
-      }
-      
       if (window.visualViewport) {
         window.visualViewport.removeEventListener('resize', onViewportChange)
       }
@@ -422,7 +366,7 @@ function Home() {
       stateRef.current.ticking = false
       return
     }
-    const ease = 0.04 // higher = faster but still smooth
+      const ease = 0.3 // higher = faster but still smooth
     const { px, py, tx, ty } = stateRef.current
     const nextPx = px + (tx - px) * ease
     const nextPy = py + (ty - py) * ease
@@ -430,8 +374,8 @@ function Home() {
     stateRef.current.py = nextPy
     el.style.setProperty('--px', nextPx.toFixed(1) + 'px')
     el.style.setProperty('--py', nextPy.toFixed(1) + 'px')
-    // stop when very close to target (tighter threshold for faster response)
-    if (Math.abs(tx - nextPx) < 1 && Math.abs(ty - nextPy) < 1) {
+    // stop when very close to target
+    if (Math.abs(tx - nextPx) < 0.5 && Math.abs(ty - nextPy) < 0.5) {
       stateRef.current.px = tx
       stateRef.current.py = ty
       el.style.setProperty('--px', tx.toFixed(1) + 'px')

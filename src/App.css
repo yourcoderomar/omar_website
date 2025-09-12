@@ -1,25 +1,14 @@
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: 0px;
-}
-
-* {
-  scroll-behavior: smooth;
 }
 
 body {
   background: black;
   min-height: 100vh;
   overflow-x: hidden;
-  /* Ultra-smooth scrolling optimizations */
+  /* Improve touch scrolling on mobile */
   -webkit-overflow-scrolling: touch;
-  overscroll-behavior-y: none;
-  scroll-behavior: smooth;
-  /* Hardware acceleration for smoother scrolling */
-  transform: translateZ(0);
-  -webkit-transform: translateZ(0);
-  /* Better scroll performance */
-  will-change: scroll-position;
+  overscroll-behavior-y: none; /* Prevent pull-to-refresh and rubber banding */
 }
 
 #root {

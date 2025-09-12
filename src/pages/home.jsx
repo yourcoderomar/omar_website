@@ -30,6 +30,11 @@ function Home() {
     setImagesVisible((v) => (v ? v : true))
   }, [])
 
+  // Get safe viewport height for mobile (excludes dynamic browser UI)
+  const getViewportHeight = () => {
+    return window.visualViewport ? window.visualViewport.height : window.innerHeight
+  }
+
   useEffect(() => {
     centerCanvas()
     const onResize = () => centerCanvas()
@@ -37,8 +42,31 @@ function Home() {
     // Also listen globally so movement continues over the navbar
     const onMove = (e) => handleMouseMove(e)
     window.addEventListener('mousemove', onMove)
+    
+    // Mobile viewport resize handling
+    const onViewportChange = () => {
+      if (window.visualViewport) {
+        centerCanvas()
+      }
+    }
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', onViewportChange)
+    }
+    
+    // Throttle scroll events for mobile performance
+    let scrollTimeout = null
+    const throttleScroll = (callback, delay = 16) => { // ~60fps
+      return () => {
+        if (scrollTimeout) return
+        scrollTimeout = setTimeout(() => {
+          callback()
+          scrollTimeout = null
+        }, delay)
+      }
+    }
+    
     // Fade out the scroll hint as user scrolls
-    const onScroll = () => {
+    const onScroll = throttleScroll(() => {
       const hint = document.querySelector('.scroll-hint')
       if (!hint) return
       const y = window.scrollY || window.pageYOffset || 0
@@ -89,18 +117,23 @@ function Home() {
         }
       }
       // (removed overlay fade logic)
-      // Stacked card transition
+      // Stacked card transition with mobile-safe viewport calculation
       const viewport = document.querySelector('.stack-viewport')
       const stage = document.querySelector('.stack-stage')
       if (viewport && stage) {
         const sr = stage.getBoundingClientRect()
-        const vh3 = window.innerHeight || document.documentElement.clientHeight
+        const vh3 = getViewportHeight() || document.documentElement.clientHeight
         const viewportHeight = viewport.getBoundingClientRect().height || vh3 * 0.8
         const startY = vh3 * 0.1
         const scrolled = Math.max(0, startY - sr.top)
-        const p1 = Math.min(1, Math.max(0, scrolled / viewportHeight))
-        const p2 = Math.min(1, Math.max(0, (scrolled - viewportHeight) / viewportHeight))
-        const p3 = Math.min(1, Math.max(0, (scrolled - viewportHeight * 2) / viewportHeight))
+        
+        // Use RAF throttling for mobile performance
+        const isMobile = window.innerWidth <= 768
+        const smoothingFactor = isMobile ? 0.8 : 1 // Smoother transitions on mobile
+        
+        const p1 = Math.min(1, Math.max(0, (scrolled / viewportHeight) * smoothingFactor))
+        const p2 = Math.min(1, Math.max(0, ((scrolled - viewportHeight) / viewportHeight) * smoothingFactor))
+        const p3 = Math.min(1, Math.max(0, ((scrolled - viewportHeight * 2) / viewportHeight) * smoothingFactor))
 
         const topCard = viewport.querySelector('.top-card')
         const nextCard = viewport.querySelector('.next-card')
@@ -142,7 +175,7 @@ function Home() {
           fourth.classList.toggle('on-top', p3 > 0.85)
         }
       }
-    }
+    })
     window.addEventListener('scroll', onScroll, { passive: true })
     // initialize once on mount
     onScroll()
@@ -150,6 +183,9 @@ function Home() {
       window.removeEventListener('resize', onResize)
       window.removeEventListener('mousemove', onMove)
       window.removeEventListener('scroll', onScroll)
+      if (window.visualViewport) {
+        window.visualViewport.removeEventListener('resize', onViewportChange)
+      }
     }
   }, [])
 

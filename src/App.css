@@ -2,6 +2,9 @@ body {
   background: black;
   min-height: 100vh;
   overflow-x: hidden;
+  /* Improve touch scrolling on mobile */
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: none; /* Prevent pull-to-refresh and rubber banding */
 }
 
 #root {
@@ -770,6 +773,61 @@ body.nav-open .cursor-dot {
   margin: 0 auto;
   overflow: hidden; /* do not show more than 80vh */
   border-radius: 24px;
+}
+
+/* Mobile optimizations for stack cards */
+@media (max-width: 768px) {
+  .stack-section { 
+    margin-top: 15vh; 
+  }
+  
+  .stack-stage {
+    height: 300vh; /* Reduced height for mobile */
+  }
+  
+  .stack-viewport {
+    top: 15vh; /* Reduced top spacing */
+    height: 70vh; /* Smaller cards on mobile */
+    width: 90%; /* More margin on sides */
+    border-radius: 16px; /* Smaller border radius */
+  }
+  
+  .stack-card {
+    border-radius: 16px;
+    transition: transform 200ms ease, opacity 200ms ease; /* Faster transitions */
+    /* Optimize for mobile performance */
+    will-change: transform, opacity;
+    transform: translateZ(0); /* Force hardware acceleration */
+  }
+}
+
+@media (max-width: 480px) {
+  .stack-section { 
+    margin-top: 10vh; 
+  }
+  
+  .stack-stage {
+    height: 280vh; /* Further reduced for small phones */
+  }
+  
+  .stack-viewport {
+    top: 10vh;
+    height: 60vh; /* Even smaller cards */
+    width: 95%;
+    border-radius: 12px;
+  }
+  
+  .stack-card {
+    border-radius: 12px;
+    /* Enhanced mobile performance */
+    will-change: transform, opacity;
+    transform: translateZ(0);
+  }
+  
+  /* Add momentum scrolling for iOS */
+  .white-section {
+    -webkit-overflow-scrolling: touch;
+  }
 }
 
 .stack-card {

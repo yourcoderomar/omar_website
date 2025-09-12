@@ -1,5 +1,7 @@
 import '../App.css'
 import Navbar from '../components/Navbar'
+import TestimonialSlideshow from '../components/TestimonialSlideshow'
+import Footer from '../components/Footer'
 import { useRef, useEffect, useState, useCallback } from 'react'
 import SplitText from '../TextAnimations/SplitText/SplitText'
 
@@ -71,7 +73,7 @@ function Home() {
     const updateAnimations = () => {
       if (!latestScrollData) return
       
-      const { hint, y, fadeDistance, zoomSection, zoomBox, white, black, viewport, stage } = latestScrollData
+      const { hint, y, fadeDistance, zoomSection, zoomBox, zoomSectionBottom, zoomBoxBottom, white, black, viewport, stage } = latestScrollData
       
       // Scroll hint fade
       if (hint) {
@@ -86,6 +88,15 @@ function Home() {
         const progress = Math.min(1, Math.max(0, 1 - rect.top / vh))
         const scale = 0.92 + progress * (1.1 - 0.92)
         zoomBox.style.setProperty('--zoom', String(scale))
+      }
+      
+      // Bottom zoom section scaling
+      if (zoomSectionBottom && zoomBoxBottom) {
+        const rect = zoomSectionBottom.getBoundingClientRect()
+        const vh = getViewportHeight()
+        const progress = Math.min(1, Math.max(0, 1 - rect.top / vh))
+        const scale = 0.92 + progress * (1.1 - 0.92)
+        zoomBoxBottom.style.setProperty('--zoom-bottom', String(scale))
       }
       
       // White section smooth lift
@@ -205,11 +216,14 @@ function Home() {
         fadeDistance: 220,
         zoomSection: getCachedElement('.zoom-section'),
         zoomBox: getCachedElement('.zoom-box'),
+        zoomSectionBottom: getCachedElement('.zoom-section-bottom'),
+        zoomBoxBottom: getCachedElement('.zoom-box-bottom'),
         white: getCachedElement('.white-section'),
         black: getCachedElement('.black-section'),
         viewport: getCachedElement('.stack-viewport'),
         stage: getCachedElement('.stack-stage')
       }
+      
       
       // Schedule animation update with throttling
       if (!rafId) {
@@ -277,27 +291,33 @@ function Home() {
         // Adjust dot size based on hover target
         const target = document.elementFromPoint(e.clientX, e.clientY)
         const interactive = target && target.closest && target.closest('a, button, [role="button"], .burger-btn, .menu-row, .overlay-close, .nav-links a')
+        const onTestimonial = target && target.closest && target.closest('.testimonial-item')
         const onFourthCard = target && target.closest && target.closest('.fourth-card')
         const onFirstThreeCards = target && target.closest && target.closest('.top-card, .next-card, .third-card')
+        const inBlackSection = target && target.closest && target.closest('.black-inner')
         
-        let scale = 1
-        if (interactive) {
-          scale = 0.6 // Shrink for interactive elements
+        // Remove all cursor classes first
+        dot.classList.remove('large', 'small')
+        
+        if (interactive || onTestimonial) {
+          dot.classList.add('small') // Shrink for interactive elements and testimonials
           dot.textContent = ''
         } else if (onFirstThreeCards) {
-          scale = 3.5 // Enlarge for first 3 cards only
+          dot.classList.add('large') // Enlarge for first 3 cards only
           dot.textContent = 'VIEW PROJECT'
         } else {
           dot.textContent = '' // Normal cursor for fourth card and everything else
         }
         
-        dot.style.setProperty('--dot-scale', String(scale))
         // Set cursor color based on state and underlying section
         const navOpen = document.body && document.body.classList.contains('nav-open')
-        const inZoom = target && target.closest && target.closest('.zoom-section')
+        const inZoom = target && target.closest && target.closest('.zoom-section, .zoom-section-bottom')
         const inWhite = target && target.closest && target.closest('.white-section, .about-section')
+        
         if (navOpen) {
           dot.style.background = '#cbb8ff'
+        } else if (inBlackSection) {
+          dot.style.background = '#cbb8ff' // Purple in black section
         } else if (inZoom) {
           dot.style.background = '#cbb8ff' // light purple over black div
         } else if (inWhite) {
@@ -366,7 +386,7 @@ function Home() {
       stateRef.current.ticking = false
       return
     }
-      const ease = 0.3 // higher = faster but still smooth
+      const ease = 0.1 // lower = smoother/slower
     const { px, py, tx, ty } = stateRef.current
     const nextPx = px + (tx - px) * ease
     const nextPy = py + (ty - py) * ease
@@ -398,7 +418,6 @@ function Home() {
       data-aos-easing='ease-out-cubic'
       ref={sectionRef}
       onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
     >
       <div className='parallax-bg' aria-hidden style={{ '--images-delay-base': '800ms' }}>
         {imagesVisible && (
@@ -620,12 +639,49 @@ function Home() {
     </section>
     <section className='black-section'>
       <div className='black-inner'>
+        <div className='black-content'>
+          <div className='black-tag'>Why Omar?</div>
+          <h2 className='black-title'>Lorem ipsum dolor sit amet consectetur adipisicing elit. Qui laudantium modi culpa in dolor temporibus debitis rerum! Harum qui officiis similique deleniti eius dolor? Neque animi odio officiis dicta. Ipsa.</h2>
+          <button className='black-btn'>Get in touch</button>
+        </div>
+        <div className='black-image-container'>
+          <img src='/images/hero5.jpg' alt='Omar' className='black-image' />
+        </div>
+        <div className='black-bottom-content'>
+          <div className='black-bottom-tag'>Experience</div>
+          <h3 className='black-bottom-title'>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Maxime praesentium quibusdam dolores nam. Numquam quo tenetur cum rerum reiciendis eveniet enim repellat maiores perspiciatis! Harum quod earum a quo labore?</h3>
+          <button className='black-bottom-btn'>View portfolio</button>
+        </div>
       </div>
     </section>
+    <section className='zoom-section-bottom'>
+      <div className='zoom-stage-bottom'>
+        <div className='zoom-box-bottom'>
+          <div className='zoom-content-bottom'>
+            <div className='zoom-tag-bottom'>Testimonials</div>
+            <h2>Lorem ipsum dolor sit amet consectetur adipisicing elit. Mollitia temporibus perspiciatis quos rerum enim quaerat magnam dolorem sit, eaque ipsam voluptates minus laudantium, dolorum, officia similique! Maxime deleniti ut fugiat!</h2>
+            <TestimonialSlideshow />
+            
+            {/* Bottom section with heading and buttons */}
+            <div className="slideshow-bottom-section">
+              <h2 className="slideshow-bottom-heading">Scrolled all the way down? Now things are really getting started. What would you like next?</h2>
+              <div className="slideshow-bottom-buttons">
+                <button className="slideshow-btn primary">make contact</button>
+                <button className="slideshow-btn secondary">discover projects</button>
+                <button className="slideshow-btn secondary">Download CV</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <Footer />
     </>
   )
 }
 
 export default Home
+
 
 

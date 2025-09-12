@@ -92,8 +92,8 @@ function Navbar() {
               <div>+02 01155306633</div>
             </div>
             <div className='footer-col'>
-              <a href='#'>Instagram</a>
-              <a href='#'>LinkedIn</a>
+              <div><a href='#'>Instagram</a></div>
+              <div><a href='#'>LinkedIn</a></div>
             </div>
           </div>
         </div>

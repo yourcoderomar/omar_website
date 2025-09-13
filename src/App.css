@@ -663,7 +663,7 @@ img[src="/images/logo.png"]:hover {
 }
 
 .nav-links a:hover {
-  background: rgba(173, 173, 173, 0.355);
+  background: rgb(216, 215, 215);
 }
 
 .nav-links a:hover::before { width: 16px; opacity: 1; }

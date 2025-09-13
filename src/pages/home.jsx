@@ -556,7 +556,7 @@ function Home() {
           </div>
       <div className='hero-content'>
         <SplitText
-          text="O~M"
+          text="Omar"
           tag="h1"
           splitType="chars"
           className="hero-title"
@@ -578,22 +578,30 @@ function Home() {
       <div className='zoom-stage'>
         <div className='zoom-box'>
           <div className='zoom-content'>
-            <h2>I'm a versatile developer,data analyst, and designer who turns ideas into smart products—blending clean code, sharp design, and AI-powered automations for fast, effective solutions.</h2>
+            <h2>Hello! I'm Omar Mostafa, a full-stack developer and designer who brings creative ideas to life with clean code and innovative solutions.</h2>
             <div className='zoom-right-content'>
               <p>
               Bringing your vision to life quickly and efficiently—whether it's branding, apps, or websites—I've got it covered, delivering smooth and effective solutions from start to finish.
               </p>
-              <button className='cta-button' type='button'>SEE MY WORK</button>
+              <button className='cta-button' type='button' onClick={() => {
+                const element = document.getElementById('work');
+                if (element) {
+                  element.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                  });
+                }
+              }}>View Projects</button>
             </div>
           </div>
         </div>
       </div>
     </section>
-    <section className='white-section'>
+    <section id='work' className='white-section'>
       <div className='white-inner'>
         <span className='section-tag'>Cases</span>
         <h2 className='white-headline'>
-          Extensive projects that we are particularly proud of 																							 
+          Extensive projects that i'm particularly proud of 																							 
          				 
          																
         																
@@ -671,7 +679,7 @@ function Home() {
                 <div className='card-content fourth-content'>
                   <div className='projects-tag'>Projects</div>
                   <h3 className='projects-title'>Discover more works</h3>
-                  <button className='projects-btn'>show all projects</button>
+                  <button className='projects-btn'>Show all projects</button>
                 </div>
               </div>
             </div>
@@ -679,37 +687,53 @@ function Home() {
         </section>
       </div>
     </section>
-    <section className='black-section'>
+    <section id='about' className='black-section'>
       <div className='black-inner'>
         <div className='black-content'>
           <div className='black-tag'>Why Omar?</div>
-          <h2 className='black-title'>Lorem ipsum dolor sit amet consectetur adipisicing elit. Qui laudantium modi culpa in dolor temporibus debitis rerum! Harum qui officiis similique deleniti eius dolor? Neque animi odio officiis dicta. Ipsa.</h2>
-          <button className='black-btn'>Get in touch</button>
+          <h2 className='black-title'>I bring a unique blend of technical expertise and creative vision to every project. With experience in full-stack development, data analysis, and UI/UX design, I transform complex ideas into elegant, user-friendly solutions that drive real business results.</h2>
+          <button className='black-btn'>Get to know me</button>
         </div>
         <div className='black-image-container'>
           <img src='/images/omar.jpg' alt='Omar' className='black-image' />
         </div>
         <div className='black-bottom-content'>
-          <div className='black-bottom-tag'>Experience</div>
-          <h3 className='black-bottom-title'>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Maxime praesentium quibusdam dolores nam. Numquam quo tenetur cum rerum reiciendis eveniet enim repellat maiores perspiciatis! Harum quod earum a quo labore?</h3>
-          <button className='black-bottom-btn'>View portfolio</button>
+          <div className='black-bottom-tag'>Why you?</div>
+            <h3 className='black-bottom-title'>You need a developer who cares about both expertise and your business goals. I deliver solutions that work technically and drive real results.</h3>
+          <button className='black-bottom-btn' onClick={() => {
+            const element = document.getElementById('contact');
+            if (element) {
+              element.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+              });
+            }
+          }}>Contact</button>
         </div>
       </div>
     </section>
-    <section className='zoom-section-bottom'>
+    <section id='journal' className='zoom-section-bottom'>
       <div className='zoom-stage-bottom'>
         <div className='zoom-box-bottom'>
           <div className='zoom-content-bottom'>
             <div className='zoom-tag-bottom'>Testimonials</div>
-            <h2>Lorem ipsum dolor sit amet consectetur adipisicing elit. Mollitia temporibus perspiciatis quos rerum enim quaerat magnam dolorem sit, eaque ipsam voluptates minus laudantium, dolorum, officia similique! Maxime deleniti ut fugiat!</h2>
+            <h2>Don't just take my word for it. Here's what clients say about working with me and the results we've achieved together.</h2>
             <TestimonialSlideshow />
             
             {/* Bottom section with heading and buttons */}
             <div className="slideshow-bottom-section">
-              <h2 className="slideshow-bottom-heading">Scrolled all the way down? Now things are really getting started. What would you like next?</h2>
+              <h2 className="slideshow-bottom-heading">Scrolled all the way to the bottom? Then it's just getting started. What do you want next?</h2>
               <div className="slideshow-bottom-buttons">
-                <button className="slideshow-btn primary">make contact</button>
-                <button className="slideshow-btn secondary">discover projects</button>
+                <button className="slideshow-btn primary" onClick={() => {
+                  const element = document.getElementById('contact');
+                  if (element) {
+                    element.scrollIntoView({
+                      behavior: 'smooth',
+                      block: 'start'
+                    });
+                  }
+                }}>Contact</button>
+                <button className="slideshow-btn secondary">Discover projects</button>
                 <button className="slideshow-btn secondary">Download CV</button>
               </div>
             </div>

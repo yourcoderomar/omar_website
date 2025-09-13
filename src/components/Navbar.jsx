@@ -6,6 +6,28 @@ function Navbar() {
   const toggleMenu = () => setIsOpen((v) => !v)
   const closeMenu = () => setIsOpen(false)
 
+  // Smooth scroll function
+  const scrollToSection = (sectionId) => {
+    const element = document.getElementById(sectionId)
+    if (element) {
+      if (sectionId === 'about') {
+        // For about section, scroll with offset to show more content above
+        const elementPosition = element.offsetTop
+        const offsetPosition = elementPosition - 260 // 200px offset from top
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: 'smooth'
+        })
+      } else {
+        element.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
+        })
+      }
+    }
+    closeMenu() // Close mobile menu after clicking
+  }
+
   // Slideshow thumbs for each menu row
   const thumbSets = [
     ['hero1.jpg','hero2.jpg','hero3.jpg','hero4.jpg','hero5.jpg','hero6.jpg','hero7.jpg'],
@@ -43,10 +65,10 @@ function Navbar() {
         </a>
         <div className='nav-center'>
           <nav className='nav-links' aria-label='Primary'>
-            <a href='#work'>Work</a>
-            <a href='#about'>About</a>
-            <a href='#journal'>Journal</a>
-            <a href='#contact'>Contact</a>
+            <a href='#' onClick={(e) => { e.preventDefault(); scrollToSection('work'); }}>Projects</a>
+            <a href='#' onClick={(e) => { e.preventDefault(); scrollToSection('about'); }}>About</a>
+            <a href='#' onClick={(e) => { e.preventDefault(); scrollToSection('journal'); }}>Testimonials</a>
+            <a href='#' onClick={(e) => { e.preventDefault(); scrollToSection('contact'); }}>Contact</a>
           </nav>
         </div>
         <div className='nav-right'>
@@ -64,19 +86,19 @@ function Navbar() {
             <i className='fa-solid fa-xmark'></i>
           </button>
           <nav className='overlay-menu'>
-            <a className='menu-row' href='#work' onClick={closeMenu}>
+            <a className='menu-row' href='#' onClick={(e) => { e.preventDefault(); scrollToSection('work'); }}>
               <span className='menu-thumb' style={thumbStyle(0)}></span>
               <span className='menu-text'>Projects</span>
             </a>
-            <a className='menu-row' href='#about' onClick={closeMenu}>
+            <a className='menu-row' href='#' onClick={(e) => { e.preventDefault(); scrollToSection('about'); }}>
               <span className='menu-thumb' style={thumbStyle(1)}></span>
-              <span className='menu-text'>Agency</span>
+              <span className='menu-text'>About</span>
             </a>
-            <a className='menu-row' href='#journal' onClick={closeMenu}>
+            <a className='menu-row' href='#' onClick={(e) => { e.preventDefault(); scrollToSection('journal'); }}>
               <span className='menu-thumb' style={thumbStyle(2)}></span>
-              <span className='menu-text'>Journal</span>
+              <span className='menu-text'>Testimonials</span>
             </a>
-            <a className='menu-row' href='#contact' onClick={closeMenu}>
+            <a className='menu-row' href='#' onClick={(e) => { e.preventDefault(); scrollToSection('contact'); }}>
               <span className='menu-thumb' style={thumbStyle(3)}></span>
               <span className='menu-text'>Contact</span>
             </a>

@@ -5,16 +5,16 @@ const Footer = () => {
   return (
     <>
       <div className="footer-transition"></div>
-      <footer className="footer">
+      <footer id="contact" className="footer">
         <div className="footer-content">
         {/* Left side - Main brand and tagline */}
         <div className="footer-left">
           <div className="footer-brand">
-            <h1 className="footer-logo">CLOU</h1>
+            <h1 className="footer-logo">Omar</h1>
           </div>
           <div className="footer-tagline">
-            <p>Agency for meaningful graphics</p>
-            <p>and communication</p>
+            <p>Full-stack developer and designer</p>
+            <p>Turning creativity into impactful solutions.</p>
           </div>
         </div>
 

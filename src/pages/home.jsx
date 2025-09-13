@@ -2,6 +2,7 @@ import '../App.css'
 import Navbar from '../components/Navbar'
 import TestimonialSlideshow from '../components/TestimonialSlideshow'
 import Footer from '../components/Footer'
+import LoadingScreen from '../components/LoadingScreen'
 import { useRef, useEffect, useState, useCallback } from 'react'
 import SplitText from '../TextAnimations/SplitText/SplitText'
 
@@ -9,6 +10,8 @@ function Home() {
   const sectionRef = useRef(null)
   const stateRef = useRef({ px: 0, py: 0, tx: 0, ty: 0, ticking: false })
   const [imagesVisible, setImagesVisible] = useState(false)
+  const [showLoading, setShowLoading] = useState(true)
+  const [contentReady, setContentReady] = useState(false)
   // Center the canvas within the viewport
   const centerCanvas = () => {
     const el = sectionRef.current
@@ -30,6 +33,11 @@ function Home() {
 
   const handleSplitComplete = useCallback(() => {
     setImagesVisible((v) => (v ? v : true))
+  }, [])
+
+  const handleLoadingComplete = useCallback(() => {
+    setShowLoading(false)
+    setContentReady(true)
   }, [])
 
   // Get safe viewport height for mobile (excludes dynamic browser UI)
@@ -73,7 +81,7 @@ function Home() {
     const updateAnimations = () => {
       if (!latestScrollData) return
       
-      const { hint, y, fadeDistance, zoomSection, zoomBox, zoomSectionBottom, zoomBoxBottom, white, black, viewport, stage } = latestScrollData
+      const { hint, y, fadeDistance, zoomSection, zoomBox, zoomSectionBottom, zoomBoxBottom, white, black, viewport, stage, footerTransition } = latestScrollData
       
       // Scroll hint fade
       if (hint) {
@@ -193,6 +201,18 @@ function Home() {
         }
       }
       
+      // Footer transition animation
+      if (footerTransition) {
+        const rect = footerTransition.getBoundingClientRect()
+        const vh = getViewportHeight()
+        // Start animation when footer is about to come into view
+        const triggerPoint = vh * 0.8 // Trigger when footer is 80% down the viewport
+        const progress = Math.min(1, Math.max(0, (vh - rect.top) / triggerPoint))
+        const eased = progress * progress * (3 - 2 * progress) // smooth easing
+        const translateY = (1 - eased) * 100 // Move down from 100px to 0
+        footerTransition.style.transform = `translateY(${translateY}px)`
+      }
+      
       rafId = null
     }
     
@@ -221,7 +241,8 @@ function Home() {
         white: getCachedElement('.white-section'),
         black: getCachedElement('.black-section'),
         viewport: getCachedElement('.stack-viewport'),
-        stage: getCachedElement('.stack-stage')
+        stage: getCachedElement('.stack-stage'),
+        footerTransition: getCachedElement('.footer-transition')
       }
       
       
@@ -262,6 +283,16 @@ function Home() {
 
   // Progressive appear delay across all hero images
   let appearCounter = 0
+
+  // 23 unique images - no repetition
+  const allImages = [
+    'hero1.jpg', 'hero2.jpg', 'hero3.jpg', 'hero4.jpg', 'hero5.jpg',
+    'hero6.jpg', 'hero7.jpg', 'hero8.jpg', 'hero9.jpg', 'hero10.jpg',
+    'hero11.jpg', 'hero12.jpg', 'hero13.jpg', 'hero14.jpg', 'hero15.jpg',
+    'hero16.jpg', 'hero17.jpg', 'hero18.jpg', 'hero19.jpg', 'hero20.jpg',
+    'hero21.jpg', 'hero22.jpg', 'hero23.jpg'
+  ]
+  let imageIndex = 0 // Track image usage across all sections
 
   // Center-safe zone to keep background clear behind the hero text initially
   const SAFE_ZONE = { xMin: 40, xMax: 60, yMin: 22, yMax: 55 }
@@ -311,15 +342,24 @@ function Home() {
         
         // Set cursor color based on state and underlying section
         const navOpen = document.body && document.body.classList.contains('nav-open')
-        const inZoom = target && target.closest && target.closest('.zoom-section, .zoom-section-bottom')
+        const inZoom = target && target.closest && target.closest('.zoom-section')
+        const inZoomBottom = target && target.closest && target.closest('.zoom-section-bottom')
         const inWhite = target && target.closest && target.closest('.white-section, .about-section')
+        const inFooter = target && target.closest && target.closest('.footer')
+        const inFooterTransition = target && target.closest && target.closest('.footer-transition')
         
         if (navOpen) {
           dot.style.background = '#cbb8ff'
+        } else if (inZoomBottom) {
+          dot.style.background = '#000' // Black cursor in bottom zoom section (testimonials area)
+        } else if (inFooterTransition) {
+          dot.style.background = '#000' // Black cursor in footer transition
+        } else if (inFooter) {
+          dot.style.background = '#cbb8ff' // Light purple in footer
         } else if (inBlackSection) {
           dot.style.background = '#cbb8ff' // Purple in black section
         } else if (inZoom) {
-          dot.style.background = '#cbb8ff' // light purple over black div
+          dot.style.background = '#cbb8ff' // light purple over top zoom div
         } else if (inWhite) {
           dot.style.background = '#000' // black over white sections
         } else {
@@ -408,9 +448,12 @@ function Home() {
 
   return (
     <>
-    <Navbar />
-    <div id='cursor-dot' className='cursor-dot'></div>
-    <div id='global-overlay' className='global-overlay'></div>
+    {showLoading && <LoadingScreen onComplete={handleLoadingComplete} pageName="home" />}
+    {contentReady && (
+      <>
+        <Navbar />
+        <div id='cursor-dot' className='cursor-dot'></div>
+        <div id='global-overlay' className='global-overlay'></div>
     <section
       className='hero-section'
       data-aos='fade-up'
@@ -425,7 +468,6 @@ function Home() {
           {(() => {
             // Triangular lattice (staggered rows)
             const nodes = []
-            const imgs = ['hero1.jpg','hero2.jpg','hero3.jpg','hero4.jpg','hero5.jpg','hero6.jpg','hero7.jpg']
             const rows = 3
             const cols = 4
             const startY = 20 // top percentage
@@ -448,7 +490,7 @@ function Home() {
                 if (r === 1 && c === 1) {
                   x -= 9
                 }
-                const img = imgs[(r * cols + c) % imgs.length]
+                const img = allImages[imageIndex++] // Use unique image and increment
                 const inSafe = x >= SAFE_ZONE.xMin && x <= SAFE_ZONE.xMax && y >= SAFE_ZONE.yMin && y <= SAFE_ZONE.yMax
                 const delayMs = appearCounter * baseStep + (inSafe ? EXTRA_DELAY_MS : 0); appearCounter += 1
                 nodes.push(
@@ -469,44 +511,44 @@ function Home() {
           {Array.from({ length: 3 }, (_, i) => {
             const x = -20 + i * 12
             const y = 25 + i * 12
-            const imgs = ['hero1.jpg','hero2.jpg','hero3.jpg','hero4.jpg','hero5.jpg','hero6.jpg','hero7.jpg']
+            const img = allImages[imageIndex++] // Use unique image and increment
             const inSafe = x >= SAFE_ZONE.xMin && x <= SAFE_ZONE.xMax && y >= SAFE_ZONE.yMin && y <= SAFE_ZONE.yMax
             const delayMs = appearCounter * baseStep + (inSafe ? EXTRA_DELAY_MS : 0); appearCounter += 1
             return (
-              <img key={'left-' + i} className='parallax-item placed' style={{ '--x': `${x}%`, '--y': `${y}%`, '--size': `${TILE_SIZE}px`, '--appear': `${delayMs}ms`, animationDuration: '1100ms' }} src={'/images/' + imgs[i % imgs.length]} alt='' draggable='false' />
+              <img key={'left-' + i} className='parallax-item placed' style={{ '--x': `${x}%`, '--y': `${y}%`, '--size': `${TILE_SIZE}px`, '--appear': `${delayMs}ms`, animationDuration: '1100ms' }} src={'/images/' + img} alt='' draggable='false' />
             )
           })}
 
           {Array.from({ length: 3 }, (_, i) => {
             const x = 110 + i * 12
             const y = 20 + i * 14
-            const imgs = ['hero1.jpg','hero2.jpg','hero3.jpg','hero4.jpg','hero5.jpg','hero6.jpg','hero7.jpg']
+            const img = allImages[imageIndex++] // Use unique image and increment
             const inSafe = x >= SAFE_ZONE.xMin && x <= SAFE_ZONE.xMax && y >= SAFE_ZONE.yMin && y <= SAFE_ZONE.yMax
             const delayMs = appearCounter * baseStep + (inSafe ? EXTRA_DELAY_MS : 0); appearCounter += 1
             return (
-              <img key={'right-' + i} className='parallax-item placed' style={{ '--x': `${x}%`, '--y': `${y}%`, '--size': `${TILE_SIZE}px`, '--appear': `${delayMs}ms`, animationDuration: '1100ms' }} src={'/images/' + imgs[i % imgs.length]} alt='' draggable='false' />
+              <img key={'right-' + i} className='parallax-item placed' style={{ '--x': `${x}%`, '--y': `${y}%`, '--size': `${TILE_SIZE}px`, '--appear': `${delayMs}ms`, animationDuration: '1100ms' }} src={'/images/' + img} alt='' draggable='false' />
             )
           })}
 
           {Array.from({ length: 3 }, (_, i) => {
             const x = 20 + i * 18
             const y = 110 + i * 10
-            const imgs = ['hero1.jpg','hero2.jpg','hero3.jpg','hero4.jpg','hero5.jpg','hero6.jpg','hero7.jpg']
+            const img = allImages[imageIndex++] // Use unique image and increment
             const inSafe = x >= SAFE_ZONE.xMin && x <= SAFE_ZONE.xMax && y >= SAFE_ZONE.yMin && y <= SAFE_ZONE.yMax
             const delayMs = appearCounter * baseStep + (inSafe ? EXTRA_DELAY_MS : 0); appearCounter += 1
             return (
-              <img key={'bottom-' + i} className='parallax-item placed' style={{ '--x': `${x}%`, '--y': `${y}%`, '--size': `${TILE_SIZE}px`, '--appear': `${delayMs}ms`, animationDuration: '1100ms' }} src={'/images/' + imgs[i % imgs.length]} alt='' draggable='false' />
+              <img key={'bottom-' + i} className='parallax-item placed' style={{ '--x': `${x}%`, '--y': `${y}%`, '--size': `${TILE_SIZE}px`, '--appear': `${delayMs}ms`, animationDuration: '1100ms' }} src={'/images/' + img} alt='' draggable='false' />
             )
           })}
 
           {Array.from({ length: 3 }, (_, i) => {
             const x = 15 + i * 20
             const y = -18 + i * 8
-            const imgs = ['hero1.jpg','hero2.jpg','hero3.jpg','hero4.jpg','hero5.jpg','hero6.jpg','hero7.jpg']
+            const img = allImages[imageIndex++] // Use unique image and increment
             const inSafe = x >= SAFE_ZONE.xMin && x <= SAFE_ZONE.xMax && y >= SAFE_ZONE.yMin && y <= SAFE_ZONE.yMax
             const delayMs = appearCounter * baseStep + (inSafe ? EXTRA_DELAY_MS : 0); appearCounter += 1
             return (
-              <img key={'top-' + i} className='parallax-item placed' style={{ '--x': `${x}%`, '--y': `${y}%`, '--size': `${TILE_SIZE}px`, '--appear': `${delayMs}ms`, animationDuration: '1100ms' }} src={'/images/' + imgs[i % imgs.length]} alt='' draggable='false' />
+              <img key={'top-' + i} className='parallax-item placed' style={{ '--x': `${x}%`, '--y': `${y}%`, '--size': `${TILE_SIZE}px`, '--appear': `${delayMs}ms`, animationDuration: '1100ms' }} src={'/images/' + img} alt='' draggable='false' />
             )
           })}
           </>
@@ -514,7 +556,7 @@ function Home() {
           </div>
       <div className='hero-content'>
         <SplitText
-          text="CLOU"
+          text="O~M"
           tag="h1"
           splitType="chars"
           className="hero-title"
@@ -645,7 +687,7 @@ function Home() {
           <button className='black-btn'>Get in touch</button>
         </div>
         <div className='black-image-container'>
-          <img src='/images/hero5.jpg' alt='Omar' className='black-image' />
+          <img src='/images/omar.jpg' alt='Omar' className='black-image' />
         </div>
         <div className='black-bottom-content'>
           <div className='black-bottom-tag'>Experience</div>
@@ -677,6 +719,8 @@ function Home() {
     </section>
     
     <Footer />
+      </>
+    )}
     </>
   )
 }

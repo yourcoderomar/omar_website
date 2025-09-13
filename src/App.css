@@ -47,6 +47,208 @@ body {
   }
 }
 
+/* Loading Screen Styles */
+.loading-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  transition: opacity 0.5s ease-out;
+}
+
+.loading-screen.fade-out {
+  opacity: 0;
+}
+
+.loading-content {
+  text-align: center;
+}
+
+.typing-text {
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(2rem, 5vw, 4rem);
+  font-weight: 600;
+  color: #fff;
+  margin: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  display: inline-block;
+}
+
+.typing-line {
+  display: inline-block;
+  overflow: hidden;
+  width: 0;
+  /* Animation is now handled dynamically in the component */
+}
+
+.cursor {
+  display: inline-block;
+  animation: blink 1s infinite;
+  margin-left: 2px;
+}
+
+@keyframes typing {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+@keyframes text-reveal {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes blink {
+  0%, 50% {
+    opacity: 1;
+  }
+  51%, 100% {
+    opacity: 0;
+  }
+}
+
+/* Responsive adjustments for loading screen */
+@media (max-width: 768px) {
+  .typing-text {
+    font-size: clamp(1.5rem, 8vw, 3rem);
+  }
+}
+
+@media (max-width: 480px) {
+  .typing-text {
+    font-size: clamp(1.2rem, 10vw, 2.5rem);
+  }
+}
+
+/* About Page Styles */
+.about-page {
+  min-height: 100vh;
+  background: #000;
+  color: #fff;
+  padding-top: 80px;
+}
+
+.about-hero {
+  padding: 4rem 0;
+  text-align: center;
+  background: linear-gradient(135deg, #000 0%, #1a1a1a 100%);
+}
+
+.about-hero h1 {
+  font-size: clamp(2.5rem, 6vw, 4rem);
+  font-weight: 700;
+  margin-bottom: 1rem;
+  background: linear-gradient(135deg, #fff, #cbb8ff);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.about-hero p {
+  font-size: 1.2rem;
+  opacity: 0.8;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.about-content {
+  padding: 4rem 0;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.about-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: center;
+}
+
+.about-text h2 {
+  font-size: 2.5rem;
+  margin-bottom: 1.5rem;
+  color: #cbb8ff;
+}
+
+.about-text h3 {
+  font-size: 1.5rem;
+  margin: 2rem 0 1rem;
+  color: #fff;
+}
+
+.about-text p {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  opacity: 0.9;
+  margin-bottom: 1.5rem;
+}
+
+.about-text ul {
+  list-style: none;
+  padding: 0;
+}
+
+.about-text li {
+  padding: 0.5rem 0;
+  font-size: 1.1rem;
+  opacity: 0.9;
+  position: relative;
+  padding-left: 1.5rem;
+}
+
+.about-text li::before {
+  content: '→';
+  position: absolute;
+  left: 0;
+  color: #cbb8ff;
+  font-weight: bold;
+}
+
+.about-image {
+  text-align: center;
+}
+
+.about-image img {
+  max-width: 80%;
+  height: auto;
+  border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(203, 184, 255, 0.2);
+}
+
+@media (max-width: 768px) {
+  .about-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    text-align: center;
+  }
+  
+  .about-hero {
+    padding: 2rem 0;
+  }
+  
+  .about-content {
+    padding: 2rem 0;
+  }
+}
+
 /* Full-bleed Spline page */
 .spline-fullbleed {
   position: fixed;
@@ -160,13 +362,32 @@ body {
 .overlay-logo {
   position: fixed;
   left: 20px;
-  top: 44px;
+  top: 20px; /* Same position as main nav logo */
+  padding: 25px; /* Same padding as main nav logo */
+  display: block;
+  z-index: 1000;
+  pointer-events: auto;
 }
 
 .overlay-logo img {
-  max-height: 68px;
+  max-height: 90px; /* increased from 68px to match nav logo */
   height: auto;
   width: auto;
+  transition: transform 0.3s ease !important;
+  cursor: pointer !important;
+  transform-origin: center center !important;
+  display: block !important;
+  pointer-events: auto !important;
+}
+
+.overlay-logo img:hover {
+  transform: scale(1.4) rotate(360deg) !important;
+  animation: logo-crazy-spin 5s ease-in-out !important;
+}
+
+.overlay-logo:hover img {
+  transform: scale(1.4) rotate(360deg) !important;
+  animation: logo-crazy-spin 5s ease-in-out !important;
 }
 
 .overlay-close {
@@ -315,14 +536,81 @@ body.nav-open #root {
 }
 
 .nav-logo img {
-  max-height: 68px; /* keep within navbar */
+  max-height: 90px; /* increased from 68px */
   height: auto;
   width: auto;
+  transition: transform 0.3s ease !important;
+  cursor: pointer !important;
+  transform-origin: center center !important;
+  display: block !important;
+  pointer-events: auto !important;
+  position: relative;
+  z-index: 99999999; /* Even higher z-index for the image itself */
+}
+
+.nav-logo img:hover {
+  transform: scale(1.4) rotate(360deg) !important;
+  animation: logo-crazy-spin 5s ease-in-out !important;
+}
+
+/* Additional direct selector for better targeting */
+img[src="/images/logo.png"]:hover {
+  transform: scale(1.4) rotate(360deg) !important;
+  animation: logo-crazy-spin 5s ease-in-out !important;
+}
+
+/* Force the logo area to be completely on top */
+.nav-logo {
+  pointer-events: auto !important;
+}
+
+.nav-logo * {
+  pointer-events: auto !important;
+}
+
+/* Make sure no other nav elements block the logo */
+.navbar > * {
+  pointer-events: auto;
+}
+
+.nav-inner > .nav-logo {
+  pointer-events: auto !important;
+  z-index: 999999 !important;
+}
+
+@keyframes logo-crazy-spin {
+  0% { 
+    transform: scale(1) rotate(0deg) !important; 
+  }
+  25% { 
+    transform: scale(1.6) rotate(360deg) !important; 
+  }
+  50% { 
+    transform: scale(0.8) rotate(720deg) !important; 
+  }
+  75% { 
+    transform: scale(1.7) rotate(1080deg) !important; 
+  }
+  100% { 
+    transform: scale(1.4) rotate(1440deg) !important; 
+  }
 }
 
 .nav-logo {
-  position: absolute;
+  position: fixed; /* Changed from absolute to fixed */
   left: 20px;
+  top: 20px; /* Moved up from 44px */
+  padding: 25px; /* Even more padding */
+  display: block;
+  z-index: 99999; /* Higher than navbar */
+  pointer-events: auto;
+  /* Uncomment to see hover area: */
+  /* background: rgba(255, 0, 0, 0.1); */ /* Debug background removed */
+}
+
+.nav-logo:hover img {
+  transform: scale(1.4) rotate(360deg) !important;
+  animation: logo-crazy-spin 5s ease-in-out !important;
 }
 
 .nav-center {
@@ -334,6 +622,7 @@ body.nav-open #root {
   background: rgba(255, 255, 255, 0.405);
   -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
+  margin-left: 120px; /* Add margin to avoid overlapping logo */
 }
 
 .nav-links {
@@ -1681,23 +1970,27 @@ body.nav-open .cursor-dot {
 
 /* Footer transition div */
 .footer-transition {
-  height: 8rem;
+  height: 15rem;
   background: #fff;
   border-radius: 24px 24px 0 0;
-  margin-top: 130vh;
+  margin-top: 120vh;
   margin-left: -0.2rem;
   position: relative;
   z-index: 70;
   border-radius: 50px;
   width: 99.5vw;
+  transform: translateY(100px);
+  opacity: 1;
+  transition: transform 0.8s cubic-bezier(0.22, 0.61, 0.36, 1);
+  will-change: transform;
 }
 
 /* Footer Styles */
 .footer {
   background: #111;
   color: white;
-  padding: 4rem 2rem 2rem 2rem;
-  min-height: 60vh;
+  padding: 3rem 2rem 2rem 2rem;
+  min-height: 52vh;
   position: relative;
   z-index: 60;
   margin-top: -2rem;
@@ -1709,31 +2002,38 @@ body.nav-open .cursor-dot {
   gap: 4rem;
   max-width: 1400px;
   margin: 0 auto;
-  align-items: start;
+  align-items: stretch;
+  min-height: 41vh;
 }
 
 /* Left section */
 .footer-left {
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
+  justify-content: space-between;
+  height: 100%;
+  position: relative;
 }
 
 .footer-logo {
-  font-size: 8rem;
-  font-weight: 700;
+  font-size: 20vw; /* increased from 16vw */
+  font-weight: 500;
   letter-spacing: -0.05em;
   margin: 0;
+  margin-left: -7vw;
+  margin-right: 5vw;
   line-height: 0.8;
   color: white;
 }
 
 .footer-tagline {
-  margin-top: 2rem;
+  position: absolute;
+  bottom: -7rem;
+  left: -7rem;
 }
 
 .footer-tagline p {
-  font-size: 1.5rem;
+  font-size: 2vw;
   margin: 0;
   line-height: 1.3;
   color: white;
@@ -1775,14 +2075,11 @@ body.nav-open .cursor-dot {
 }
 
 .company-name {
-  font-size: 1.2rem;
+  font-size: 1.8vw;
   font-weight: 500;
 }
 
-.address {
-  font-size: 1.1rem;
-  color: #ccc;
-}
+
 
 .contact-details {
   display: flex;
@@ -1791,9 +2088,42 @@ body.nav-open .cursor-dot {
 }
 
 .phone, .email {
-  font-size: 1.2rem;
+  font-size: 1.8vw;
   margin: 0;
   color: white;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+  position: relative;
+  margin-left: -1vw;
+}
+
+.phone::before, .email::before {
+  content: "\f061";
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+  font-size: 14px;
+  color: white;
+  opacity: 0;
+  transition: opacity 200ms ease, transform 200ms ease;
+  transform: translateX(-10px);
+  flex: 0 0 auto;
+  margin-right: 0;
+}
+
+.phone:hover, .email:hover {
+  color: #ccc;
+  padding-left: 1.5rem;
+  gap: 0.5rem;
+}
+
+.phone:hover::before, .email:hover::before {
+  opacity: 1;
+  transform: translateX(0);
+  margin-right: 0.5rem;
 }
 
 /* Right section */
@@ -1819,19 +2149,76 @@ body.nav-open .cursor-dot {
   color: white;
   text-decoration: none;
   font-size: 1.1rem;
-  transition: color 0.3s ease;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+  position: relative;
+}
+
+.social-links .footer-link {
+  font-size: 1.8vw;
+  margin: 0;
+  margin-left: -1vw;
+}
+
+.social-links .footer-link::before {
+  content: "\f061";
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+  font-size: 14px;
+  color: white;
+  opacity: 0;
+  transition: opacity 200ms ease, transform 200ms ease;
+  transform: translateX(-10px);
+  flex: 0 0 auto;
+  margin-right: 0;
 }
 
 .footer-link:hover {
   color: #ccc;
 }
 
+.social-links .footer-link:hover {
+  padding-left: 1.5rem;
+  gap: 0.5rem;
+}
+
+.social-links .footer-link:hover::before {
+  opacity: 1;
+  transform: translateX(0);
+  margin-right: 0.5rem;
+}
+
 .footer-link.legal {
   color: #888;
-  font-size: 1rem;
+  font-size: 1.3rem;
+  margin-left: -1vw;
+}
+
+.footer-link.legal::before {
+  content: "\f061";
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+  font-size: 14px;
+  color: #888;
+  opacity: 0;
+  transition: opacity 200ms ease, transform 200ms ease;
+  transform: translateX(-10px);
+  flex: 0 0 auto;
+  margin-right: 0;
 }
 
 .footer-link.legal:hover {
+  color: #aaa;
+  padding-left: 1.5rem;
+  gap: 0.5rem;
+}
+
+.footer-link.legal:hover::before {
+  opacity: 1;
+  transform: translateX(0);
+  margin-right: 0.5rem;
   color: #aaa;
 }
 
@@ -1876,7 +2263,7 @@ body.nav-open .cursor-dot {
   }
   
   .footer-logo {
-    font-size: 4rem;
+    font-size: 5rem; /* increased from 4rem */
   }
   
   .footer-tagline p {

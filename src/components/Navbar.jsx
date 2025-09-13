@@ -11,7 +11,7 @@ function Navbar() {
     ['hero1.jpg','hero2.jpg','hero3.jpg','hero4.jpg','hero5.jpg','hero6.jpg','hero7.jpg'],
     ['2.png','hero3.jpg','hero4.jpg','hero5.jpg','hero6.jpg','hero7.jpg','hero1.jpg'],
     ['3.png','hero2.jpg','hero4.jpg','hero5.jpg','hero6.jpg','hero7.jpg','hero1.jpg'],
-    ['4.png','hero2.jpg','hero3.jpg','hero5.jpg','hero6.jpg','hero7.jpg','hero1.jpg'],
+    ['logo.png', 'logo-glass.png'],
   ]
   const [thumbIndex, setThumbIndex] = useState(0)
   useEffect(() => {
@@ -58,7 +58,7 @@ function Navbar() {
       <div className={`nav-overlay ${isOpen ? 'open' : ''}`} role='dialog' aria-modal='true'>
         <div className='nav-overlay-inner'>
           <a className='overlay-logo' href='/' onClick={closeMenu} aria-label='Home'>
-            <img src='/images/omar.png' alt='Logo' draggable='false' />
+            <img src='/images/logo.png' alt='Logo' draggable='false' />
           </a>
           <button className='overlay-close' onClick={closeMenu} aria-label='Close menu'>
             <i className='fa-solid fa-xmark'></i>

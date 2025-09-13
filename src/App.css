@@ -9,12 +9,14 @@ body {
   /* Improve touch scrolling on mobile */
   -webkit-overflow-scrolling: touch;
   overscroll-behavior-y: none; /* Prevent pull-to-refresh and rubber banding */
+  overflow-x: none;
 }
 
 #root {
   width: 100%;
   height: 100%;
   position: relative;
+  overflow-x: none;
 }
 
  
@@ -269,10 +271,10 @@ body {
 
 .navbar {
   position: fixed;
-  top: 24px;
+  top: clamp(4px, 0.5vw, 8px);
   left: 0;
   right: 0;
-  height: 120px;
+  height: clamp(80px, 10vw, 120px);
   display: flex;
   align-items: center;
   z-index: 100;
@@ -284,20 +286,20 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0 48px;
+  padding: 0 clamp(16px, 2vw, 32px);
   position: relative;
 }
 
 .nav-right {
   position: absolute;
-  right: 20px;
+  right: clamp(16px, 2vw, 20px);
   display: flex;
   align-items: center;
 }
 
 .burger-btn {
-  width: 80px;
-  height: 80px;
+  width: clamp(40px, 5vw, 55px);
+  height: clamp(40px, 5vw, 55px);
   display: inline-flex;
   flex-direction: column;
   align-items: center;
@@ -311,12 +313,12 @@ body {
 }
 
 .burger-btn:hover {
-  transform: scale(1.3);
+  transform: scale(1.1);
 }
 
 .burger-btn span {
   display: block;
-  width: 30px;
+  width: 24px;
   height: 2px;
   background: white;
   border-radius: 2px;
@@ -324,7 +326,7 @@ body {
 
 .burger-btn i {
   color: #fff;
-  font-size: 34px;
+  font-size: clamp(16px, 2vw, 22px);
 }
 
 /* Fullscreen menu overlay */
@@ -362,16 +364,16 @@ body {
 
 .overlay-logo {
   position: fixed;
-  left: 20px;
-  top: 20px; /* Same position as main nav logo */
-  padding: 25px; /* Same padding as main nav logo */
+  left: clamp(16px, 2vw, 20px);
+  top: clamp(4px, 0.5vw, 8px);
+  padding: clamp(16px, 2vw, 25px);
   display: block;
   z-index: 1000;
   pointer-events: auto;
 }
 
 .overlay-logo img {
-  max-height: 90px; /* increased from 68px to match nav logo */
+  max-height: clamp(60px, 8vw, 90px);
   height: auto;
   width: auto;
   transition: transform 0.3s ease !important;
@@ -393,13 +395,13 @@ body {
 
 .overlay-close {
   position: fixed;
-  top: 44px; /* match .navbar top */
-  right: 20px; /* match .nav-right */
-  width: 80px; /* match .burger-btn size */
-  height: 80px;
+  top: clamp(10px, 3.2vw, 64px);
+  right: clamp(5px, 2vw, 30px);
+  width: clamp(40px, 5vw, 55px);
+  height: clamp(40px, 5vw, 55px);
   border: none;
   border-radius: 999px;
-  background: black;
+  background: #000;
   color: #fff;
   display: grid;
   place-items: center;
@@ -410,7 +412,18 @@ body {
   transition: opacity 200ms ease;
 }
 
-.overlay-close i { font-size: 34px; }
+.overlay-close i { 
+  font-size: clamp(20px, 2.5vw, 28px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  line-height: 1;
+  margin: 0;
+  padding: 0;
+  transform: translateX(-2px);
+}
 
 .nav-overlay.open .overlay-close {
   opacity: 1;
@@ -422,7 +435,7 @@ body {
 }
 
 .overlay-menu {
-  margin-top: 80px; /* push links down */
+  margin-top: 3vh; /* push links down */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -451,19 +464,15 @@ body {
 }
 
 /* Per-row custom vertical paddings */
-.overlay-menu .menu-row:nth-child(1) { padding-left:10vw; }
-.overlay-menu .menu-row:nth-child(2) { padding-right: 10vw; }
-.overlay-menu .menu-row:nth-child(3) { padding-left:10vw; }
-.overlay-menu .menu-row:nth-child(4) { padding-right: 10vw; }
+.overlay-menu .menu-row:nth-child(1) { padding-left: clamp(2rem, 10vw, 8rem); }
+.overlay-menu .menu-row:nth-child(2) { padding-right: clamp(2rem, 10vw, 8rem); }
+.overlay-menu .menu-row:nth-child(3) { padding-left: clamp(2rem, 10vw, 8rem); }
+.overlay-menu .menu-row:nth-child(4) { padding-right: clamp(2rem, 10vw, 8rem); }
 
 
 .menu-thumb {
-  width: 7vw;
-  height: 7vw;
-  min-width: 72px;
-  min-height: 72px;
-  max-width: 160px;
-  max-height: 160px;
+  width: clamp(120px, 10vw, 220px);
+  height: clamp(120px, 10vw, 220px);
   border-radius: 999px;
   background-size: cover;
   background-position: center;
@@ -472,7 +481,7 @@ body {
 }
 
 .menu-text {
-  font-size: 7vw;
+  font-size: clamp(3rem, 9vw, 12rem);
   line-height: 1;
   font-weight: 400;
   letter-spacing: 0.02em;
@@ -537,7 +546,7 @@ body.nav-open #root {
 }
 
 .nav-logo img {
-  max-height: 90px; /* increased from 68px */
+  max-height: clamp(60px, 8vw, 90px);
   height: auto;
   width: auto;
   transition: transform 0.3s ease !important;
@@ -599,9 +608,9 @@ img[src="/images/logo.png"]:hover {
 
 .nav-logo {
   position: fixed; /* Changed from absolute to fixed */
-  left: 20px;
-  top: 20px; /* Moved up from 44px */
-  padding: 25px; /* Even more padding */
+  left: clamp(16px, 2vw, 20px);
+  top: clamp(4px, 0.5vw, 8px); /* Moved up from 44px */
+  padding: clamp(16px, 2vw, 25px); /* Even more padding */
   display: block;
   z-index: 99999; /* Higher than navbar */
   pointer-events: auto;
@@ -617,26 +626,26 @@ img[src="/images/logo.png"]:hover {
 .nav-center {
   display: inline-flex;
   align-items: center;
-  gap: 28px;
-  padding: 8px 8px;
+  gap: 0;
+  padding: clamp(4px, 0.5vw, 6px) clamp(4px, 0.5vw, 6px);
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.405);
   -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
-  margin-left: 40px; /* Add margin to avoid overlapping logo */
+  margin-left: clamp(24px, 3vw, 40px); /* Add margin to avoid overlapping logo */
 }
 
 .nav-links {
   display: inline-flex;
-  gap: 28px;
+  gap: 0;
 }
 
 .nav-links a {
   color: #111;
   text-decoration: none;
   font-weight: 400;
-  font-size: 1.5rem;
-  padding: 8px 20px; /* more side padding inside the pill */
+  font-size: clamp(1rem, 1.2vw, 1.5rem);
+  padding: clamp(4px, 0.5vw, 6px) clamp(8px, 1vw, 12px); /* more side padding inside the pill */
   position: relative;
   border-radius: 999px;
   display: inline-flex;
@@ -646,10 +655,6 @@ img[src="/images/logo.png"]:hover {
   will-change: padding, background-color, gap;
 }
 
-.nav-links {
-  display: flex;
-  gap: 16px;
-}
 
 /* Middle nav link hover: dot that claims space (pushes text) */
 .nav-links a::before {
@@ -692,7 +697,7 @@ img[src="/images/logo.png"]:hover {
 
 .hero-content h1 {
   margin: 0;
-  font-size: 16vw;
+  font-size: 240px;
   line-height: 1.12;
   font-weight: 400;
   letter-spacing: 0.05em;
@@ -755,7 +760,7 @@ img[src="/images/logo.png"]:hover {
 }
 
 .zoom-content h2 {
-  font-size: 4.2rem;
+  font-size: clamp(2rem, 4vw, 4.2rem);
   font-weight: 400;
   margin: 0 0 1.5rem 1rem;
   line-height: 1.1;
@@ -763,7 +768,7 @@ img[src="/images/logo.png"]:hover {
 }
 
 .zoom-right-content p {
-  font-size: 1.7rem;
+  font-size: clamp(1rem, 1.5vw, 1.7rem);
   line-height: 1.6;
   margin: 0;
   opacity: 0.9;
@@ -823,8 +828,8 @@ img[src="/images/logo.png"]:hover {
   position: absolute;
   top: 0;
   left: 0;
-  width: 180vw; /* reduced from 300vw */
-  height: 200vh; /* slightly reduced */
+  width: 180vw;
+  height: 200vh;
   pointer-events: auto; /* allow hover on images while mousemove still bubbles */
   transform: translate(var(--px, 0px), var(--py, 0px));
   will-change: transform;
@@ -836,9 +841,9 @@ img[src="/images/logo.png"]:hover {
   --intro: 1;
   --hover: 1;
   position: absolute;
-  width: var(--size, 200px);
-  height: var(--size, 200px); /* enforce square */
-  max-width: 60vw;
+  width: var(--size, 160px);
+  height: var(--size, 160px); /* enforce square */
+  max-width: 50vw;
   border-radius: 10px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28), 0 2px 8px rgba(0, 0, 0, 0.18);
   filter: saturate(1.05) contrast(1.02);
@@ -886,8 +891,8 @@ img[src="/images/logo.png"]:hover {
   position: fixed;
   left: 0;
   top: 0;
-  width: 50px;
-  height: 50px;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
   background: #000;
   pointer-events: none;
@@ -899,9 +904,9 @@ img[src="/images/logo.png"]:hover {
   align-items: center;
   justify-content: center;
   color: white;
-  font-size: 4px;
+  font-size: 0.3vw;
   font-weight: 600;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.3px;
 }
 
 /* Larger cursor dot when hovering over cards */
@@ -969,7 +974,7 @@ img[src="/images/logo.png"]:hover {
 
 .black-title {
   margin: 0;
-  font-size: 4rem;
+  font-size: clamp(2rem, 4vw, 4rem);
   font-weight: 500;
   line-height: 1.2;
   letter-spacing: -0.02em;
@@ -1063,7 +1068,7 @@ img[src="/images/logo.png"]:hover {
 
 .black-bottom-title {
   margin: 0;
-  font-size: 2.2rem;
+  font-size: clamp(1.5rem, 2.2vw, 2.2rem);
   font-weight: 400;
   line-height: 1.4;
   letter-spacing: -0.02em;
@@ -1075,9 +1080,9 @@ img[src="/images/logo.png"]:hover {
 .black-bottom-btn {
   background: #1f2126;
   color: #fff;
-  padding: 1.5vw 1.5vw;
+  padding: clamp(0.8rem, 1.5vw, 1.2rem) clamp(1.2rem, 1.5vw, 1.5rem);
   border-radius: 50px;
-  font-size: 1.2vw;
+  font-size: clamp(0.9rem, 1.2vw, 1.1rem);
   font-weight: 500;
   letter-spacing: 0.5px;
   cursor: pointer;
@@ -1091,7 +1096,7 @@ img[src="/images/logo.png"]:hover {
 .black-bottom-btn::before {
   content: "";
   position: absolute;
-  left: 1vw;
+  left: clamp(0.5rem, 1vw, 1rem);
   top: calc(50% + 1px);
   transform: translateY(-50%);
   width: 0;
@@ -1108,7 +1113,7 @@ img[src="/images/logo.png"]:hover {
 }
 
 .black-bottom-btn:hover {
-  padding-left: 3vw;
+  padding-left: clamp(1.5rem, 3vw, 2.5rem);
   gap: 0.5rem;
 }
 
@@ -1134,7 +1139,7 @@ body.nav-open .cursor-dot {
   align-items: center;
   gap: 10px;
   color: #111;
-  font-size: 18px;
+  font-size: 14px;
   letter-spacing: 0.08em;
   opacity: 0.95;
   z-index: 3;
@@ -1261,7 +1266,7 @@ body.nav-open .cursor-dot {
 }
 
 .white-headline {
-  font-size: 3vw;
+  font-size: clamp(1.5rem, 3vw, 3rem);
   line-height: 1.5;
   font-weight: 500;
   margin: 28px 0 0 5rem;
@@ -1541,7 +1546,7 @@ body.nav-open .cursor-dot {
 /* Typography */
 .card-title {
   margin: 0;
-  font-size: 3rem;
+  font-size: clamp(1.5rem, 3vw, 3rem);
   font-weight: 500;
   line-height: 1.2;
   letter-spacing: -0.02em;
@@ -1634,7 +1639,7 @@ body.nav-open .cursor-dot {
 
 .projects-title {
   margin: 0;
-  font-size: 5vw;
+  font-size: clamp(2rem, 5vw, 4rem);
   font-weight: 500;
   line-height: 1.2;
   letter-spacing: -0.02em;
@@ -1645,9 +1650,9 @@ body.nav-open .cursor-dot {
 .projects-btn {
   background: white;
   color: #111;
-  padding: 1.5vw 1.5vw;
+  padding: clamp(0.8rem, 1.5vw, 1.2rem) clamp(1.2rem, 1.5vw, 1.5rem);
   border-radius: 50px;
-  font-size: 1.2vw;
+  font-size: clamp(0.9rem, 1.2vw, 1.1rem);
   font-weight: 500;
   letter-spacing: 0.5px;
   cursor: pointer;
@@ -1660,7 +1665,7 @@ body.nav-open .cursor-dot {
 .projects-btn::before {
   content: "";
   position: absolute;
-  left: 1vw;
+  left: clamp(0.5rem, 1vw, 1rem);
   top: calc(50% + 1px);
   transform: translateY(-50%);
   width: 0;
@@ -1677,7 +1682,7 @@ body.nav-open .cursor-dot {
 }
 
 .projects-btn:hover {
-  padding-left: 3vw;
+  padding-left: clamp(1.5rem, 3vw, 2.5rem);
   gap: 0.5rem;
   border: none;
 }
@@ -1764,7 +1769,7 @@ body.nav-open .cursor-dot {
 }
 
 .zoom-content-bottom h2 {
-  font-size: 2.5rem;
+  font-size: clamp(1.5rem, 2.5vw, 2.5rem);
   font-weight: 500;
   margin: 0;
   line-height: 1.5;
@@ -1779,7 +1784,7 @@ body.nav-open .cursor-dot {
 }
 
 .zoom-content-bottom p {
-  font-size: 1.3rem;
+  font-size: clamp(1rem, 1.3vw, 1.3rem);
   line-height: 1.6;
   margin: 0;
   opacity: 0.8;
@@ -1870,7 +1875,7 @@ body.nav-open .cursor-dot {
 
 .nav-btn:hover {
   background: #111;
-  transform: scale(1.1);
+  transform: scale(1.05);
 }
 
 .testimonial-scroll-container {
@@ -1890,7 +1895,7 @@ body.nav-open .cursor-dot {
 }
 
 .slideshow-bottom-heading {
-  font-size: 2.5rem;
+  font-size: clamp(1.5rem, 2.5vw, 2.5rem);
   font-weight: 600;
   color: #111;
   margin-bottom: 3rem;
@@ -1910,9 +1915,9 @@ body.nav-open .cursor-dot {
 .slideshow-btn {
   background: white;
   color: #111;
-  padding: 1.5vw 1.5vw;
+  padding: clamp(0.8rem, 1.5vw, 1.2rem) clamp(1.2rem, 1.5vw, 1.5rem);
   border-radius: 50px;
-  font-size: 1.2vw;
+  font-size: clamp(0.9rem, 1.2vw, 1.1rem);
   font-weight: 500;
   letter-spacing: 0.5px;
   cursor: pointer;
@@ -1931,7 +1936,7 @@ body.nav-open .cursor-dot {
 .slideshow-btn::before {
   content: "";
   position: absolute;
-  left: 1vw;
+  left: clamp(0.5rem, 1vw, 1rem);
   top: calc(50% + 1px);
   transform: translateY(-50%);
   width: 0;
@@ -1948,7 +1953,7 @@ body.nav-open .cursor-dot {
 }
 
 .slideshow-btn:hover {
-  padding-left: 3vw;
+  padding-left: clamp(1.5rem, 3vw, 2.5rem);
   gap: 0.5rem;
 }
 
@@ -1972,16 +1977,16 @@ body.nav-open .cursor-dot {
 
 /* Footer transition div */
 .footer-transition {
-  height: 15rem;
+  height: clamp(8rem, 15vw, 15rem);
   background: #fff;
   border-radius: 24px 24px 0 0;
-  margin-top: 120vh;
+  margin-top: clamp(80vh, 140vw, 160vh);
   margin-left: -0.2rem;
   position: relative;
   z-index: 70;
   border-radius: 50px;
   width: 99.5vw;
-  transform: translateY(100px);
+  transform: translateY(clamp(50px, 8vw, 100px));
   opacity: 1;
   transition: transform 0.8s cubic-bezier(0.22, 0.61, 0.36, 1);
   will-change: transform;
@@ -1991,8 +1996,8 @@ body.nav-open .cursor-dot {
 .footer {
   background: #101114;
   color: white;
-  padding: 3rem 2rem 2rem 2rem;
-  min-height: 52vh;
+  padding: clamp(2rem, 3vw, 3rem) clamp(1.5rem, 2vw, 2rem) clamp(1.5rem, 2vw, 2rem) clamp(1.5rem, 2vw, 2rem);
+  min-height: clamp(50vh, 65vw, 65vh);
   position: relative;
   z-index: 60;
   margin-top: -2rem;
@@ -2001,41 +2006,42 @@ body.nav-open .cursor-dot {
 .footer-content {
   display: grid;
   grid-template-columns: 2fr 1.5fr 1fr;
-  gap: 4rem;
+  gap: clamp(2rem, 4vw, 4rem);
   max-width: 1400px;
   margin: 0 auto;
   align-items: stretch;
-  min-height: 41vh;
+  min-height: clamp(40vh, 55vw, 55vh);
+  margin-top: 1vw;
 }
 
 /* Left section */
 .footer-left {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-start;
   height: 100%;
   position: relative;
 }
 
 .footer-logo {
-  font-size: 20vw; /* increased from 16vw */
+  font-size: clamp(15rem, 18vw, 25rem);
   font-weight: 500;
   letter-spacing: -0.05em;
   margin: 0;
-  margin-left: -7vw;
-  margin-right: 5vw;
+  margin-left: -2vw;
+  margin-right: 0;
   line-height: 0.8;
   color: white;
 }
 
 .footer-tagline {
   position: absolute;
-  bottom: -7rem;
-  left: -7rem;
+  bottom: clamp(-5rem, -7vw, -7rem);
+  left: clamp(-1rem, -1vw, -1rem);
 }
 
 .footer-tagline p {
-  font-size: 2vw;
+  font-size: clamp(1rem, 2vw, 1.5rem);
   margin: 0;
   line-height: 1.3;
   color: white;
@@ -2077,7 +2083,7 @@ body.nav-open .cursor-dot {
 }
 
 .company-name {
-  font-size: 1.8vw;
+  font-size: clamp(1rem, 1.8vw, 1.5rem);
   font-weight: 500;
 }
 
@@ -2090,7 +2096,7 @@ body.nav-open .cursor-dot {
 }
 
 .phone, .email {
-  font-size: 1.8vw;
+  font-size: clamp(1rem, 1.8vw, 1.5rem);
   margin: 0;
   color: white;
   text-decoration: none;
@@ -2159,7 +2165,7 @@ body.nav-open .cursor-dot {
 }
 
 .social-links .footer-link {
-  font-size: 1.8vw;
+  font-size: clamp(1rem, 1.8vw, 1.5rem);
   margin: 0;
   margin-left: -1vw;
 }
@@ -2258,6 +2264,33 @@ body.nav-open .cursor-dot {
 }
 
 /* Responsive design */
+@media (max-width: 1200px) {
+  .hero-content h1 {
+    font-size: 200px;
+  }
+  
+  .zoom-content h2 {
+    font-size: clamp(1.8rem, 3.5vw, 3.5rem);
+  }
+  
+  .white-headline {
+    font-size: clamp(1.3rem, 2.5vw, 2.5rem);
+  }
+  
+  .black-title {
+    font-size: clamp(1.8rem, 3.5vw, 3.5rem);
+  }
+  
+  .menu-text {
+    font-size: clamp(2.5rem, 7vw, 6rem);
+  }
+  
+  .menu-thumb {
+    width: clamp(60px, 8vw, 120px);
+    height: clamp(60px, 8vw, 120px);
+  }
+}
+
 @media (max-width: 768px) {
   .footer-content {
     grid-template-columns: 1fr;
@@ -2265,11 +2298,141 @@ body.nav-open .cursor-dot {
   }
   
   .footer-logo {
-    font-size: 5rem; /* increased from 4rem */
+    font-size: clamp(2.5rem, 8vw, 5rem);
+    margin-left: -3vw;
+  }
+  
+  .footer-tagline {
+    bottom: clamp(-2.5rem, -4vw, -4rem);
+    left: clamp(-2.5rem, -4vw, -4rem);
   }
   
   .footer-tagline p {
     font-size: 1.2rem;
+  }
+  
+  .hero-content h1 {
+    font-size: 150px;
+  }
+  
+  .zoom-content h2 {
+    font-size: clamp(1.5rem, 3vw, 3rem);
+  }
+  
+  .menu-text {
+    font-size: clamp(2rem, 6vw, 4rem);
+  }
+  
+  .menu-thumb {
+    width: clamp(50px, 8vw, 100px);
+    height: clamp(50px, 8vw, 100px);
+  }
+  
+  .parallax-bg {
+    width: 120vw;
+  }
+  
+  .menu-row {
+    width: 100%;
+    margin-left: 0;
+  }
+  
+  .zoom-box {
+    max-width: 95vw;
+  }
+  
+  .zoom-box-bottom {
+    max-width: 95vw;
+  }
+  
+  .footer-transition {
+    width: 100vw;
+  }
+  
+  .black-content {
+    max-width: 100%;
+    padding: 4rem 1rem 2rem 1rem;
+  }
+  
+  .black-image {
+    width: 100%;
+    max-width: 100%;
+  }
+  
+  .black-bottom-content {
+    max-width: 100%;
+    left: 0;
+    transform: none;
+    padding: 0 1rem;
+  }
+  
+  .slideshow-bottom-section {
+    margin-left: 0;
+    padding-left: 1rem;
+  }
+  
+  .slideshow-bottom-heading {
+    width: 100%;
+  }
+  
+  .footer-content {
+    max-width: 100%;
+  }
+  
+  /* Force no horizontal scrolling on mobile */
+  body {
+    overflow-x: hidden !important;
+  }
+  
+  html {
+    overflow-x: hidden !important;
+  }
+  
+  #root {
+    overflow-x: hidden !important;
+  }
+  
+  /* Fix any elements that might extend beyond viewport */
+  * {
+    max-width: 100vw;
+  }
+  
+  .white-headline {
+    font-size: clamp(1.2rem, 2.2vw, 2.2rem);
+  }
+  
+  /* Hide everything on mobile */
+  .hero-section,
+  .zoom-section,
+  .zoom-section-bottom,
+  .black-section,
+  .white-section,
+  .stack-section,
+  .slideshow-bottom-section,
+  .footer-transition,
+  .footer {
+    display: none !important;
+  }
+  
+  .black-title {
+    font-size: clamp(1.5rem, 3vw, 3rem);
+  }
+  
+  /* Footer transition mobile adjustments */
+  .footer-transition {
+    height: clamp(6rem, 12vw, 10rem);
+    margin-top: clamp(60vh, 100vw, 120vh);
+    transform: translateY(clamp(30px, 6vw, 60px));
+  }
+  
+  .footer {
+    padding: clamp(1.5rem, 2.5vw, 2.5rem) clamp(1rem, 1.5vw, 1.5rem);
+    min-height: clamp(45vh, 55vw, 55vh);
+  }
+  
+  .footer-content {
+    gap: clamp(1.5rem, 3vw, 3rem);
+    min-height: clamp(35vh, 45vw, 45vh);
   }
 }
 
@@ -2461,7 +2624,7 @@ body.nav-open .cursor-dot {
 }
 
 .testimonial-dot:hover {
-  transform: scale(1.2);
+  transform: scale(1.1);
 }
 
 .testimonial-dot.active {

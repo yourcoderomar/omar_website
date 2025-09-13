@@ -209,7 +209,9 @@ function Home() {
         const triggerPoint = vh * 0.8 // Trigger when footer is 80% down the viewport
         const progress = Math.min(1, Math.max(0, (vh - rect.top) / triggerPoint))
         const eased = progress * progress * (3 - 2 * progress) // smooth easing
-        const translateY = (1 - eased) * 100 // Move down from 100px to 0
+        // Use responsive translateY value based on viewport width
+        const maxTranslateY = Math.max(50, window.innerWidth * 0.08) // 8vw equivalent, minimum 50px
+        const translateY = (1 - eased) * maxTranslateY
         footerTransition.style.transform = `translateY(${translateY}px)`
       }
       
@@ -279,7 +281,7 @@ function Home() {
   }, [])
 
   // Uniform tile size for all images
-  const TILE_SIZE = 300
+  const TILE_SIZE = 210
 
   // Progressive appear delay across all hero images
   let appearCounter = 0

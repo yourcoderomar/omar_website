@@ -2405,16 +2405,7 @@ body.nav-open .cursor-dot {
     font-size: clamp(1.2rem, 2.2vw, 2.2rem);
   }
   
-  /* Hide main sections on mobile (footer remains visible) */
-  .hero-section,
-  .zoom-section,
-  .zoom-section-bottom,
-  .black-section,
-  .white-section,
-  .stack-section,
-  .slideshow-bottom-section {
-    display: none !important;
-  }
+
   
   .black-title {
     font-size: clamp(1.5rem, 3vw, 3rem);

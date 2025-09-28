@@ -3,6 +3,7 @@ import Navbar from '../components/Navbar'
 import TestimonialSlideshow from '../components/TestimonialSlideshow'
 import Footer from '../components/Footer'
 import LoadingScreen from '../components/LoadingScreen'
+import ScrollStack, { ScrollStackItem } from '../components/ScrollStack/ScrollStack'
 import { useRef, useEffect, useState, useCallback } from 'react'
 import SplitText from '../TextAnimations/SplitText/SplitText'
 
@@ -47,7 +48,12 @@ function Home() {
 
   useEffect(() => {
     centerCanvas()
-    const onResize = () => centerCanvas()
+    // Stack heights are now handled by ScrollStack component
+
+    const onResize = () => {
+      centerCanvas()
+      // ScrollStack component handles its own resize logic
+    }
     window.addEventListener('resize', onResize)
     // Also listen globally so movement continues over the navbar
     const onMove = (e) => handleMouseMove(e)
@@ -57,13 +63,21 @@ function Home() {
     const onViewportChange = () => {
       if (window.visualViewport) {
         centerCanvas()
-        // Clear cached elements on viewport change
-        cachedElements = {}
+        // ScrollStack component handles its own viewport changes
       }
+    }
+    
+    // Handle orientation change for stack
+    const onOrientationChange = () => {
+      setTimeout(() => {
+        centerCanvas()
+        // ScrollStack component handles its own orientation changes
+      }, 100)
     }
     if (window.visualViewport) {
       window.visualViewport.addEventListener('resize', onViewportChange)
     }
+    window.addEventListener('orientationchange', onOrientationChange)
     
     // Cache DOM elements to avoid repeated queries
     let cachedElements = {}
@@ -81,7 +95,7 @@ function Home() {
     const updateAnimations = () => {
       if (!latestScrollData) return
       
-      const { hint, y, fadeDistance, zoomSection, zoomBox, zoomSectionBottom, zoomBoxBottom, white, black, viewport, stage, footerTransition } = latestScrollData
+      const { hint, y, fadeDistance, zoomSection, zoomBox, zoomSectionBottom, zoomBoxBottom, white, black, footerTransition } = latestScrollData
       
       // Scroll hint fade
       if (hint) {
@@ -136,70 +150,7 @@ function Home() {
         }
       }
       
-      // Stack cards with improved performance
-      if (viewport && stage) {
-        const sr = stage.getBoundingClientRect()
-        const vh3 = getViewportHeight()
-        const viewportHeight = viewport.getBoundingClientRect().height || vh3 * 0.8
-        const startY = vh3 * 0.1
-        const scrolled = Math.max(0, startY - sr.top)
-        
-        const isMobile = window.innerWidth <= 768
-        const smoothingFactor = isMobile ? 0.85 : 1
-        
-        const p1 = Math.min(1, Math.max(0, (scrolled / viewportHeight) * smoothingFactor))
-        const p2 = Math.min(1, Math.max(0, ((scrolled - viewportHeight) / viewportHeight) * smoothingFactor))
-        const p3 = Math.min(1, Math.max(0, ((scrolled - viewportHeight * 2) / viewportHeight) * smoothingFactor))
-
-        const topCard = viewport.querySelector('.top-card')
-        const nextCard = viewport.querySelector('.next-card')
-        const third = viewport.querySelector('.third-card')
-        const fourth = viewport.querySelector('.fourth-card')
-
-        if (topCard && nextCard && third && fourth) {
-          // Optimized transform handling with hardware acceleration
-          const scale1 = 1 - 0.12 * p1
-          const fade1 = Math.max(0, 1 - 0.85 * p1)
-          
-          topCard.style.transform = `translate(-50%, 0) scale(${scale1}) translateZ(0)`
-          topCard.style.opacity = String(fade1)
-          topCard.style.visibility = p1 >= 0.999 ? 'hidden' : 'visible'
-
-          // Optimized nextCard logic
-          const rise1 = (1 - p1) * 100
-          if (p2 <= 0) {
-            nextCard.style.transform = `translate(-50%, ${rise1}%) translateZ(0)`
-            nextCard.style.opacity = '1'
-          } else {
-            const scale2 = 1 - 0.12 * p2
-            const fade2 = Math.max(0, 1 - 0.85 * p2)
-            nextCard.style.transform = `translate(-50%, 0) scale(${scale2}) translateZ(0)`
-            nextCard.style.opacity = String(fade2)
-          }
-          nextCard.style.visibility = p2 >= 0.999 ? 'hidden' : 'visible'
-          nextCard.classList.toggle('on-top', p1 > 0.85 && p2 <= 0)
-
-          // Optimized third card
-          const rise2 = (1 - p2) * 100
-          if (p3 <= 0) {
-            third.style.transform = `translate(-50%, ${rise2}%) translateZ(0)`
-            third.style.opacity = '1'
-          } else {
-            const scale3 = 1 - 0.12 * p3
-            const fade3 = Math.max(0, 1 - 0.85 * p3)
-            third.style.transform = `translate(-50%, 0) scale(${scale3}) translateZ(0)`
-            third.style.opacity = String(fade3)
-          }
-          third.style.visibility = p3 >= 0.999 ? 'hidden' : 'visible'
-          third.classList.toggle('on-top', p2 > 0.85 && p3 <= 0)
-
-          // Optimized fourth card
-          const rise3 = (1 - p3) * 100
-          fourth.style.transform = `translate(-50%, ${rise3}%) translateZ(0)`
-          fourth.style.opacity = '1'
-          fourth.classList.toggle('on-top', p3 > 0.85)
-        }
-      }
+      // Stack animation is now handled by ScrollStack component
       
       // Footer transition animation
       if (footerTransition) {
@@ -242,8 +193,6 @@ function Home() {
         zoomBoxBottom: getCachedElement('.zoom-box-bottom'),
         white: getCachedElement('.white-section'),
         black: getCachedElement('.black-section'),
-        viewport: getCachedElement('.stack-viewport'),
-        stage: getCachedElement('.stack-stage'),
         footerTransition: getCachedElement('.footer-transition')
       }
       
@@ -267,6 +216,7 @@ function Home() {
       window.removeEventListener('resize', onResize)
       window.removeEventListener('mousemove', onMove)
       window.removeEventListener('scroll', onScroll)
+      window.removeEventListener('orientationchange', onOrientationChange)
       if (window.visualViewport) {
         window.visualViewport.removeEventListener('resize', onViewportChange)
       }
@@ -622,70 +572,82 @@ function Home() {
         </h2>
 
         <section className='stack-section'>
-          <div className='stack-stage'>
-            <div className='stack-viewport'>
-              <div className='stack-card top-card'>
-                <div className='card-content'>
-                  <div className='card-left'>
-                    <h3 className='card-title'>BACK-TO-HOME</h3>
-                    <div className='card-tags'>
-                      <span className='card-tag'>Quasar</span>
-                      <span className='card-tag'>Supabase</span>
-                      <span className='card-tag'>CANVA</span>
-                      <span className='card-tag'>UML</span>
-                      <span className='card-tag'>SQL</span>
-                    </div>
+          <ScrollStack
+            useWindowScroll={true}
+            itemDistance={120}
+            itemScale={0.02}
+            itemStackDistance={25}
+            stackPosition="25%"
+            scaleEndPosition="15%"
+            baseScale={0.88}
+            rotationAmount={0}
+            blurAmount={0}
+            className="custom-scroll-stack"
+          >
+            <ScrollStackItem itemClassName="top-card">
+              <div className='card-content'>
+                <div className='card-left'>
+                  <h3 className='card-title'>BACK-TO-HOME</h3>
+                  <div className='card-tags'>
+                    <span className='card-tag'>Quasar</span>
+                    <span className='card-tag'>Supabase</span>
+                    <span className='card-tag'>CANVA</span>
+                    <span className='card-tag'>UML</span>
+                    <span className='card-tag'>SQL</span>
                   </div>
-                  <div className='card-center'>
-                    <div className='card-image-wrapper'>
-                      <img src='/images/back-home.jpg' alt='Web Development' className='card-image' />
-                    </div>
+                </div>
+                <div className='card-center'>
+                  <div className='card-image-wrapper'>
+                    <img src='/images/back-home.jpg' alt='Web Development' className='card-image' />
                   </div>
                 </div>
               </div>
-              <div className='stack-card next-card'>
-                <div className='card-content'>
-                  <div className='card-left'>
-                    <h3 className='card-title'>Data Analytics</h3>
-                    <div className='card-tags'>
-                      <span className='card-tag'>Python</span>
-                      <span className='card-tag'>Machine Learning</span>
-                      <span className='card-tag'>Visualization</span>
-                    </div>
+            </ScrollStackItem>
+            
+            <ScrollStackItem itemClassName="next-card">
+              <div className='card-content'>
+                <div className='card-left'>
+                  <h3 className='card-title'>Data Analytics</h3>
+                  <div className='card-tags'>
+                    <span className='card-tag'>Python</span>
+                    <span className='card-tag'>Machine Learning</span>
+                    <span className='card-tag'>Visualization</span>
                   </div>
-                  <div className='card-center'>
-                    <div className='card-image-wrapper'>
-                      <img src='/images/2.png' alt='Data Analytics' className='card-image' />
-                    </div>
+                </div>
+                <div className='card-center'>
+                  <div className='card-image-wrapper'>
+                    <img src='/images/2.png' alt='Data Analytics' className='card-image' />
                   </div>
                 </div>
               </div>
-              <div className='stack-card third-card'>
-                <div className='card-content'>
-                  <div className='card-left'>
-                    <h3 className='card-title'>UI/UX Design</h3>
-                    <div className='card-tags'>
-                      <span className='card-tag'>Figma</span>
-                      <span className='card-tag'>Prototyping</span>
-                      <span className='card-tag'>User Research</span>
-                    </div>
+            </ScrollStackItem>
+            
+            <ScrollStackItem itemClassName="third-card">
+              <div className='card-content'>
+                <div className='card-left'>
+                  <h3 className='card-title'>UI/UX Design</h3>
+                  <div className='card-tags'>
+                    <span className='card-tag'>Figma</span>
+                    <span className='card-tag'>Prototyping</span>
+                    <span className='card-tag'>User Research</span>
                   </div>
-                  <div className='card-center'>
-                    <div className='card-image-wrapper'>
-                      <img src='/images/3.png' alt='UI/UX Design' className='card-image' />
-                    </div>
+                </div>
+                <div className='card-center'>
+                  <div className='card-image-wrapper'>
+                    <img src='/images/3.png' alt='UI/UX Design' className='card-image' />
                   </div>
                 </div>
               </div>
-              <div className='stack-card fourth-card'>
-                <div className='card-content fourth-content'>
-                  <div className='projects-tag'>Projects</div>
-                  <h3 className='projects-title'>Discover more works</h3>
-                  <button className='projects-btn'>Show all projects</button>
-                </div>
+            </ScrollStackItem>
+            
+            <ScrollStackItem itemClassName="fourth-card">
+              <div className='card-content fourth-content'>
+                <div className='projects-tag'>Projects</div>
+                <h3 className='projects-title'>Discover more works</h3>
+                <button className='projects-btn'>Show all projects</button>
               </div>
-            </div>
-          </div>
+            </ScrollStackItem>
+          </ScrollStack>
         </section>
       </div>
     </section>

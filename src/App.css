@@ -938,7 +938,7 @@ img[src="/images/logo.png"]:hover {
 
 .black-inner {
   max-width: 100%;
-  margin: 0 auto;
+  margin: 0;
   padding: 4vh 24px;
   position: sticky;
   top: 0; /* stick to viewport while section scrolls */
@@ -1047,11 +1047,11 @@ img[src="/images/logo.png"]:hover {
   align-items: flex-start;
   gap: 1.5rem;
   margin-top: 3rem;
-  padding: 0 2rem 0 4rem;
-  max-width: 1600px;
+  padding: 0 0rem 0 0rem;
+  max-width: 40%;
   position: relative;
   margin-left: auto;
-  margin-right: auto;
+  margin-right: 2rem;
 }
 
 .black-bottom-tag {
@@ -1074,7 +1074,7 @@ img[src="/images/logo.png"]:hover {
   line-height: 1.4;
   letter-spacing: -0.02em;
   color: #fff;
-  max-width: 50%;
+  max-width: 100%;
   text-align: left;
 }
 
@@ -1237,7 +1237,7 @@ body.nav-open .cursor-dot {
 .white-section {
   background: #fff;
   color: #111;
-  min-height: 150vh;
+  min-height: 120vh;
   /* Pull up over the #111zoom card */
   margin: -10vh auto 0 auto;
   border-radius: 24px;
@@ -1276,6 +1276,130 @@ body.nav-open .cursor-dot {
 
 /* Stacked cards */
 .stack-section { margin-top: 20vh; }
+
+/* Custom ScrollStack styling */
+.custom-scroll-stack {
+  height: 80vh; /* Very compact scroll */
+  /* Prevent glitching */
+  contain: layout style paint;
+  will-change: scroll-position;
+}
+
+.custom-scroll-stack .scroll-stack-inner {
+  padding: 20vh 1rem 0;
+  min-height: 100vh;
+  padding-left: clamp(1rem, 1rem, 1rem);
+  padding-right: clamp(1rem, 1rem, 1rem);
+}
+
+.custom-scroll-stack .scroll-stack-card {
+  height: 86vh;
+  width: 99.5%;
+  margin: 0 auto;
+  border-radius: 24px;
+  box-shadow: 0 24px 70px rgba(0,0,0,0.10);
+  position: relative;
+  background: #f2f2f2;
+  overflow: hidden;
+  /* Prevent glitching */
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+  transform-style: preserve-3d;
+  /* Smooth transitions */
+  transition: transform 0.1s ease-out, opacity 0.1s ease-out;
+  /* Prevent flickering */
+  -webkit-transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  -webkit-perspective: 1000px;
+  perspective: 1000px;
+}
+
+/* Card-specific colors matching original design */
+.custom-scroll-stack .scroll-stack-card.top-card {
+  background: #2C3E50;
+  color: #fff;
+}
+
+.custom-scroll-stack .scroll-stack-card.next-card {
+  background: #8E44AD;
+  color: #fff;
+}
+
+.custom-scroll-stack .scroll-stack-card.third-card {
+  background: #E67E22;
+  color: #fff;
+}
+
+.custom-scroll-stack .scroll-stack-card.fourth-card {
+  background: #1a1a1a;
+  color: #fff;
+}
+
+/* Card title colors matching original design */
+.custom-scroll-stack .top-card .card-title {
+  color: #F5F5DC; /* Beige/off-white for web development */
+}
+
+.custom-scroll-stack .next-card .card-title {
+  color: #F39C12; /* Golden yellow for data analytics */
+}
+
+.custom-scroll-stack .third-card .card-title {
+  color: #E74C3C; /* Vibrant red for UI/UX design */
+}
+
+/* Card tag styling matching original design */
+.custom-scroll-stack .top-card .card-tag {
+  background: transparent;
+  border: 2px solid #F5F5DC;
+  color: #F5F5DC;
+}
+
+.custom-scroll-stack .next-card .card-tag {
+  background: transparent;
+  border: 2px solid #F39C12;
+  color: #F39C12;
+}
+
+.custom-scroll-stack .third-card .card-tag {
+  background: transparent;
+  border: 2px solid #E74C3C;
+  color: #E74C3C;
+}
+
+/* Mobile responsive for ScrollStack */
+@media (max-width: 768px) {
+  .custom-scroll-stack {
+    height: 140vh;
+  }
+  
+  .custom-scroll-stack .scroll-stack-inner {
+    padding: 15vh 1rem 0;
+  }
+  
+  .custom-scroll-stack .scroll-stack-card {
+    height: 70vh;
+    width: 98%;
+    border-radius: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .custom-scroll-stack {
+    height: 130vh;
+  }
+  
+  .custom-scroll-stack .scroll-stack-inner {
+    padding: 10vh 1rem 0;
+  }
+  
+  .custom-scroll-stack .scroll-stack-card {
+    height: 60vh;
+    width: 99%;
+    border-radius: 12px;
+  }
+}
 
 .stack-stage {
   position: relative;

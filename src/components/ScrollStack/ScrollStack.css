@@ -1,0 +1,67 @@
+/*
+	Installed from https://reactbits.dev/default/
+*/
+
+.scroll-stack-scroller {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: visible;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  will-change: scroll-position;
+  /* Mobile optimizations */
+  touch-action: pan-y;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.scroll-stack-inner {
+  padding: 20vh 5rem 0;
+  min-height: 100vh;
+  /* Mobile responsive padding */
+  padding-left: clamp(1rem, 5rem, 5rem);
+  padding-right: clamp(1rem, 5rem, 5rem);
+  /* Ensure proper height calculation */
+  height: auto;
+  position: relative;
+}
+
+.scroll-stack-card-wrapper {
+  position: relative;
+}
+
+.scroll-stack-card {
+  transform-origin: top center;
+  will-change: transform, filter;
+  backface-visibility: hidden;
+  transform-style: preserve-3d;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
+  height: 20rem;
+  width: 100%;
+  margin: 30px 0;
+  padding: 3rem;
+  border-radius: 40px;
+  box-sizing: border-box;
+  /* Improve mobile performance */
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  position: relative;
+  /* Mobile responsive adjustments */
+  padding: clamp(1.5rem, 3rem, 3rem);
+  border-radius: clamp(20px, 40px, 40px);
+  height: clamp(15rem, 20rem, 20rem);
+}
+
+.scroll-stack-end {
+  width: 100%;
+  height: 20vh;
+  /* Ensure proper spacing without excessive height */
+  min-height: 20vh;
+  max-height: 50vh;
+}

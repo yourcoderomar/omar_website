@@ -713,6 +713,11 @@ img[src="/images/logo.png"]:hover {
   color: #111;
   min-height: 220vh; /* extra space to drive the zoom */
 }
+@media (max-width: 768px) {
+  .zoom-section {
+    min-height: 110vh;
+  }
+}
 
 .zoom-stage {
   position: sticky;
@@ -2162,6 +2167,15 @@ body.nav-open .cursor-dot {
   color: white;
 }
 
+/* Make Omar logo larger and positioned lower on mobile */
+@media (max-width: 768px) {
+  .footer-logo {
+    font-size: clamp(8.5rem, 35vw, 40rem);
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+  }
+}
+
 .footer-tagline {
   position: absolute;
   bottom: clamp(-5rem, -7vw, -7rem);
@@ -2173,6 +2187,13 @@ body.nav-open .cursor-dot {
   margin: 0;
   line-height: 1.3;
   color: white;
+}
+
+/* Hide footer tagline text on mobile */
+@media (max-width: 768px) {
+  .footer-tagline p {
+    display: none;
+  }
 }
 
 /* Center section */
@@ -2213,6 +2234,7 @@ body.nav-open .cursor-dot {
 .company-name {
   font-size: clamp(1rem, 1.8vw, 1.5rem);
   font-weight: 500;
+  padding-left: 0.9rem;
 }
 
 
@@ -2420,15 +2442,45 @@ body.nav-open .cursor-dot {
 }
 
 @media (max-width: 768px) {
+  .nav-center {
+    display: none;
+  }
+  
+  /* Mobile navigation overlay improvements */
+  .overlay-menu {
+    margin-top: 5vh;
+    padding: 0 1rem;
+  }
+  
+  .menu-row {
+    width: 100%;
+    margin-left: 0;
+    padding: 1rem 0;
+    gap: 1rem;
+  }
+  
+  .menu-thumb {
+    width: clamp(80px, 15vw, 120px);
+    height: clamp(80px, 15vw, 120px);
+  }
+  
+  .menu-text {
+    font-size: clamp(1.5rem, 4vw, 2.5rem);
+  }
+  
+  .overlay-footer {
+    bottom: 30px;
+    padding: 0 1rem;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    font-size: 1rem;
+  }
+  
   .footer-content {
     grid-template-columns: 1fr;
     gap: 3rem;
   }
   
-  .footer-logo {
-    font-size: clamp(2.5rem, 8vw, 5rem);
-    margin-left: -3vw;
-  }
   
   .footer-tagline {
     bottom: clamp(-2.5rem, -4vw, -4rem);
@@ -2538,8 +2590,11 @@ body.nav-open .cursor-dot {
   /* Footer transition mobile adjustments */
   .footer-transition {
     height: clamp(6rem, 12vw, 10rem);
-    margin-top: clamp(60vh, 100vw, 120vh);
-    transform: translateY(clamp(30px, 6vw, 60px));
+    margin-top: clamp(60vh, 120vw, 140vh);
+    transform: translateY(clamp(20px, 4vw, 50px));
+    border-radius: 0 0 24px 24px;
+    width: 102%;
+    max-width: 102vw;
   }
   
   .footer {

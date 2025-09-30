@@ -10,64 +10,56 @@ const TestimonialSlideshow = () => {
       image: '/images/1.png',
       tag: 'Client work',
       name: 'Time for a burst of courage',
-      testimonial: 'Laila follows the sun south and finds it between paella and tinto verano. Time out in Valencia. Vamos!',
-      link: 'read more'
+      testimonial: 'Laila follows the sun south and finds it between paella and tinto verano. Time out in Valencia. Vamos!'
     },
     {
       id: 2,
       image: '/images/2.png',
       tag: 'Client work',
       name: 'An unforgettable trip to Copenhagen',
-      testimonial: 'Where to eat, shop and chill in the Danish design capital.',
-      link: 'read more'
+      testimonial: 'Where to eat, shop and chill in the Danish design capital.'
     },
     {
       id: 3,
       image: '/images/3.png',
       tag: 'Client work',
       name: 'Hej fra København!',
-      testimonial: 'Michelle is experiencing her first time out in the Danish design capital.',
-      link: 'read more'
+      testimonial: 'Michelle is experiencing her first time out in the Danish design capital.'
     },
     {
       id: 4,
       image: '/images/4.png',
       tag: 'Client work',
       name: 'Among Chilangos and nomads',
-      testimonial: 'Dripping tacos, boiling stadiums, and hip co-working spaces. Time out in Mexico City!',
-      link: 'read more'
+      testimonial: 'Dripping tacos, boiling stadiums, and hip co-working spaces. Time out in Mexico City!'
     },
     {
       id: 5,
       image: '/images/hero1.jpg',
       tag: 'Project',
       name: 'Modern web solutions',
-      testimonial: 'Creating responsive and interactive websites that deliver exceptional user experiences.',
-      link: 'read more'
+      testimonial: 'Creating responsive and interactive websites that deliver exceptional user experiences.'
     },
     {
       id: 6,
       image: '/images/hero2.jpg',
       tag: 'Project',
       name: 'Data visualization mastery',
-      testimonial: 'Transforming complex data into beautiful, insightful visual stories.',
-      link: 'read more'
+      testimonial: 'Transforming complex data into beautiful, insightful visual stories.'
     },
     {
       id: 7,
       image: '/images/hero3.jpg',
       tag: 'Project',
       name: 'UI/UX design excellence',
-      testimonial: 'Crafting intuitive interfaces that users love and businesses trust.',
-      link: 'read more'
+      testimonial: 'Crafting intuitive interfaces that users love and businesses trust.'
     },
     {
       id: 8,
       image: '/images/hero4.jpg',
       tag: 'Project',
       name: 'Full-stack development',
-      testimonial: 'Building robust applications from concept to deployment.',
-      link: 'read more'
+      testimonial: 'Building robust applications from concept to deployment.'
     }
   ]
 
@@ -77,7 +69,8 @@ const TestimonialSlideshow = () => {
   const goNext = () => {
     setCurrentSet((prev) => {
       const next = (prev + 1) % totalTestimonials
-      setScrollOffset(next * 15) // Each testimonial move is 15% (100% / ~6-7 visible)
+      const isMobile = window.innerWidth <= 768
+      setScrollOffset(next * (isMobile ? 100 : 13)) // 100% on mobile, 13% desktop
       return next
     })
   }
@@ -85,14 +78,16 @@ const TestimonialSlideshow = () => {
   const goPrev = () => {
     setCurrentSet((prev) => {
       const next = (prev - 1 + totalTestimonials) % totalTestimonials
-      setScrollOffset(next * 15) // Each testimonial move is 15%
+      const isMobile = window.innerWidth <= 768
+      setScrollOffset(next * (isMobile ? 100 : 13))
       return next
     })
   }
 
   const goToSet = (index) => {
     setCurrentSet(index)
-    setScrollOffset(index * 15) // Each testimonial move is 15%
+    const isMobile = window.innerWidth <= 768
+    setScrollOffset(index * (isMobile ? 100 : 13))
   }
 
   // Handle horizontal scroll for navigation
@@ -163,7 +158,6 @@ const TestimonialSlideshow = () => {
               <div className="testimonial-content">
                 <h4 className="testimonial-name">{testimonial.name}</h4>
                 <p className="testimonial-text">{testimonial.testimonial}</p>
-                <span className="testimonial-link">{testimonial.link}</span>
               </div>
             </div>
           ))}

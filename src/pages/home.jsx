@@ -282,12 +282,13 @@ function Home() {
         // Remove all cursor classes first
         dot.classList.remove('large', 'small')
         
-        if (interactive || onTestimonial) {
-          dot.classList.add('small') // Shrink for interactive elements and testimonials
-          dot.textContent = ''
-        } else if (onFirstThreeCards) {
+        // Prioritize first three cards over generic interactive elements
+        if (onFirstThreeCards) {
           dot.classList.add('large') // Enlarge for first 3 cards only
           dot.textContent = 'VIEW PROJECT'
+        } else if (interactive || onTestimonial) {
+          dot.classList.add('small') // Shrink for interactive elements and testimonials
+          dot.textContent = ''
         } else {
           dot.textContent = '' // Normal cursor for fourth card and everything else
         }
@@ -585,6 +586,7 @@ function Home() {
             className="custom-scroll-stack"
           >
             <ScrollStackItem itemClassName="top-card">
+              <a className='card-link' href="#back-to-home">
               <div className='card-content'>
                 <div className='card-left'>
                   <h3 className='card-title'>BACK-TO-HOME</h3>
@@ -602,27 +604,31 @@ function Home() {
                   </div>
                 </div>
               </div>
+              </a>
             </ScrollStackItem>
             
             <ScrollStackItem itemClassName="next-card">
+              <a className='card-link' href="#data-analytics">
               <div className='card-content'>
                 <div className='card-left'>
-                  <h3 className='card-title'>Data Analytics</h3>
+                  <h3 className='card-title'>Attendnace Workflow</h3>
                   <div className='card-tags'>
-                    <span className='card-tag'>Python</span>
-                    <span className='card-tag'>Machine Learning</span>
-                    <span className='card-tag'>Visualization</span>
+                    <span className='card-tag'>n8n</span>
+                    <span className='card-tag'>API</span>
+                    <span className='card-tag'>Excell</span>
                   </div>
                 </div>
                 <div className='card-center'>
                   <div className='card-image-wrapper'>
-                    <img src='/images/2.png' alt='Data Analytics' className='card-image' />
+                    <img src='/images/n8n.jpg' alt='Data Analytics' className='card-image' />
                   </div>
                 </div>
               </div>
+              </a>
             </ScrollStackItem>
             
             <ScrollStackItem itemClassName="third-card">
+              <a className='card-link' href="#ui-ux-design">
               <div className='card-content'>
                 <div className='card-left'>
                   <h3 className='card-title'>UI/UX Design</h3>
@@ -638,6 +644,7 @@ function Home() {
                   </div>
                 </div>
               </div>
+              </a>
             </ScrollStackItem>
             
             <ScrollStackItem itemClassName="fourth-card">

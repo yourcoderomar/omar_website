@@ -1332,8 +1332,8 @@ body.nav-open .cursor-dot {
 }
 
 .custom-scroll-stack .scroll-stack-card.third-card {
-  background: #E67E22;
-  color: #fff;
+  background: #f1f1ee; /* Off-white */
+  color: #111; /* Dark text for contrast */
 }
 
 .custom-scroll-stack .scroll-stack-card.fourth-card {
@@ -1351,7 +1351,7 @@ body.nav-open .cursor-dot {
 }
 
 .custom-scroll-stack .third-card .card-title {
-  color: #E74C3C; /* Vibrant red for UI/UX design */
+  color: #111; /* Black title for UI/UX card */
 }
 
 /* Card tag styling matching original design */
@@ -1369,8 +1369,8 @@ body.nav-open .cursor-dot {
 
 .custom-scroll-stack .third-card .card-tag {
   background: transparent;
-  border: 2px solid #E74C3C;
-  color: #E74C3C;
+  border: 2px solid #111; /* Black tag border */
+  color: #111; /* Black tag text */
 }
 
 /* Mobile responsive for ScrollStack */
@@ -1608,7 +1608,7 @@ body.nav-open .cursor-dot {
 /* Colors and on-top state */
 .top-card { background: #2C3E50; color: #fff; } /* Dark blue-gray - works well with web dev screenshots */
 .next-card { background: #8E44AD; color: #fff; } /* Deep purple - great for data/analytics visuals */
-.third-card { background: #E67E22; color: #fff; } /* Warm orange - complements design/UI images */
+.third-card { background: #F5F5DC; color: #111; } /* Off-white background for UI/UX project card */
 .fourth-card { background: #1a1a1a; color: #fff; }
 .stack-card.on-top { z-index: 3; }
 
@@ -1628,7 +1628,7 @@ body.nav-open .cursor-dot {
 }
 
 .third-card .card-title {
-  color: #E74C3C; /* Vibrant red for UI/UX design */
+  color: #111; /* Black title for UI/UX card */
 }
 
 /* Card-specific tag colors */
@@ -1646,8 +1646,8 @@ body.nav-open .cursor-dot {
 
 .third-card .card-tag {
   background: transparent;
-  border: 2px solid #E74C3C;
-  color: #E74C3C;
+  border: 2px solid #111; /* Black tag border */
+  color: #111; /* Black tag text */
 }
 
 /* Nudge title and tags further up/left on first three cards */

@@ -631,16 +631,16 @@ function Home() {
               <a className='card-link' href="#ui-ux-design">
               <div className='card-content'>
                 <div className='card-left'>
-                  <h3 className='card-title'>UI/UX Design</h3>
+                  <h3 className='card-title'>Edusync Attendance Platform</h3>
                   <div className='card-tags'>
-                    <span className='card-tag'>Figma</span>
-                    <span className='card-tag'>Prototyping</span>
-                    <span className='card-tag'>User Research</span>
+                    <span className='card-tag'>React js</span>
+                    <span className='card-tag'>Supabase</span>
+                    <span className='card-tag'>N8N</span>
                   </div>
                 </div>
                 <div className='card-center'>
                   <div className='card-image-wrapper'>
-                    <img src='/images/3.png' alt='UI/UX Design' className='card-image' />
+                    <img src='/images/Edu.jpg' alt='Edusync Attendance Platform' className='card-image' />
                   </div>
                 </div>
               </div>
